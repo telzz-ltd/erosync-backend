@@ -1,0 +1,33 @@
+package views
+
+import "erosync/views/components"
+
+templ HomeContent() {
+	<div class="flex min-h-screen flex-col p-4">
+		<nav class="flex items-center justify-between">
+			<div class="flex items-center gap-2">
+				<img src={ "/static/logo.png" } width={ 50 } height={ 50 } alt="erosync logo"/>
+				<div>
+					<h3 class="text-xl font-bold text-primary-blue uppercase">
+						Erosync
+					</h3>
+					<p class="text-xs font-bold text-accent-green uppercase">
+						Nigeria Limited
+					</p>
+				</div>
+			</div>
+			<div class="flex items-center gap-2">
+				<button class="bg-primary px-8 h-11 text-white border-2 border-primary">
+					Get in Touch
+				</button>
+				<a href="/login" class="inline-block leading-11 bg-primary/10 border-2 border-primary text-primary px-8 h-11">
+					Sign In
+				</a>
+			</div>
+		</nav>
+	</div>
+}
+
+templ Home() {
+	@components.Base("Erosync Limited", HomeContent())
+}

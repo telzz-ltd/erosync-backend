@@ -1,0 +1,27 @@
+package components
+
+templ Input(name, inputType, label, err string) {
+	<div aria-invalid={ err } class="">
+		<div class="flex items-center justify-between">
+			<label>{ label }</label>
+		</div>
+		<input
+			class="h-12 border bg-white px-4 w-full focus:outline-0 focus:border focus:border-black/40 focus:ring-2 focus:ring-black/10 rounded-sm"
+			id={ name }
+			name={ name }
+			type={ inputType }
+			placeholder={ "Enter " + label }
+		/>
+		if err != "" {
+			<p class="text-destructive text-sm">{ err }</p>
+		}
+	</div>
+}
+
+templ FormErrors(errs []string) {
+	<ul class="p-4 bg-red-50 border border-red-900/50 ring-2 ring-red-800/10 list-disc list-inside rounded-sm">
+		for _, err := range errs {
+			<li class="text-base text-red-900">{ err }</li>
+		}
+	</ul>
+}
