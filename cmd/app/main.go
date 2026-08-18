@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"erosync/internal/infrastructure/server"
+	"erosync/cmd/server"
 	"erosync/internal/middleware"
-	"erosync/internal/pkg/env"
-	"net/http"
+	"erosync/pkg/env"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,15 +14,22 @@ import (
 func main() {
 	ctx := context.Background()
 
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("startup panic:", err)
+		}
+	}()
+
 	killSig := make(chan os.Signal, 1)
 	signal.Notify(killSig, os.Interrupt, syscall.SIGTERM)
 
-	mux := http.NewServeMux()
-	srv := server.New(ctx, mux)
+	srv := server.New(ctx)
 
-	srv.RegisterRoutes(mux)
+	mux := srv.RegisterRoutes()
 
-	mux.Handle("GET /static/", middleware.Static("/static", "./static"))
+	handler := middleware.Recoverer(mux)
+
+	srv.SetHandler(handler)
 
 	port := env.GetInt("PORT", 8080)
 	srv.Start(port)

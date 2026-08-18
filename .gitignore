@@ -2,4 +2,4 @@ tmp
 .envrc
 index.html
 sample.go
-views/*.go
+**/*templ.go

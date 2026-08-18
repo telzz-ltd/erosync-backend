@@ -1,39 +1,57 @@
 package handler
 
 import (
-	"erosync/internal/pkg"
-	"erosync/views"
-	"erosync/views/components"
+	"encoding/json"
+	"erosync/internal/dto"
+	"erosync/internal/store"
+	"erosync/pkg/api"
+	"errors"
+	"fmt"
 	"net/http"
+
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginHandler struct {
+	store store.Store
 }
 
-func NewLoginHandler() *LoginHandler {
-	return &LoginHandler{}
+func NewLoginHandler(store store.Store) *LoginHandler {
+	return &LoginHandler{store}
 }
 
-func (h *LoginHandler) Page(w http.ResponseWriter, r *http.Request) {
-	views.Login().Render(r.Context(), w)
-}
-
-type LoginDto struct {
-	Email    string `form:"email"`
-	Password string `form:"password"`
-}
-
-func (h *LoginHandler) Submit(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+func (h *LoginHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	var req dto.LoginRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		components.FormErrors([]string{err.Error()}).Render(r.Context(), w)
+		api.BadRequest(w, err.Error())
 		return
 	}
 
-	var req LoginDto
-	err = pkg.ParseForm(r, &req)
+	err = req.Validate()
 	if err != nil {
-		components.FormErrors([]string{err.Error()}).Render(r.Context(), w)
+		if vErr, ok := errors.AsType[validation.Errors](err); ok {
+			api.ValidationError(w, vErr)
+			return
+		}
+
+		api.BadRequest(w, err.Error())
 		return
 	}
+
+	user, err := h.store.User.FindByEmail(req.Email)
+	if err != nil {
+		fmt.Println("err", err.Error())
+		api.BadRequest(w, err.Error())
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password))
+	if err != nil {
+		api.BadRequest(w, err.Error())
+		return
+	}
+
+	api.OK(w, user)
 }

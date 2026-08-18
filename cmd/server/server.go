@@ -7,7 +7,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -15,13 +14,16 @@ type Server struct {
 	httpServer *http.Server
 }
 
-func New(ctx context.Context, handler http.Handler) *Server {
+func New(ctx context.Context) *Server {
 	return &Server{
 		httpServer: &http.Server{
-			Handler:     handler,
 			BaseContext: func(l net.Listener) context.Context { return ctx },
 		},
 	}
+}
+
+func (s *Server) SetHandler(handler http.Handler) {
+	s.httpServer.Handler = handler
 }
 
 func (s *Server) Start(port int) {
@@ -40,14 +42,15 @@ func (s *Server) Start(port int) {
 }
 
 func (s *Server) Shutdown(ctx context.Context) {
-	log.Println("shuttong down server")
+	log.Println("shutting down server")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
 	if err := s.httpServer.Shutdown(ctx); err != nil {
-		log.Println("Server shutdown failed. Forcefully shorting down server...", err)
-		os.Exit(1)
+		log.Println("Server shutdown failed:", err)
+		return
 	}
+
 	log.Println("Server shutdown completed")
 }

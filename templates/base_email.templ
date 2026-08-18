@@ -1,0 +1,20 @@
+package templates
+
+templ BaseEmail(title string, content templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en" data-theme="light">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			if title != "" {
+				<title>{ title } | Erosync Limited</title>
+			} else {
+				<title>Erosync Limited</title>
+			}
+			<link rel="shortcut icon" href="/static/logo.png" type="image/x-icon"/>
+		</head>
+		<body>
+			@content
+		</body>
+	</html>
+}

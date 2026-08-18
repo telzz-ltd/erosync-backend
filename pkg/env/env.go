@@ -14,6 +14,14 @@ func Get(key, fallback string) string {
 	return value
 }
 
+func GetOrPanic(key string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		log.Fatalf("env %s not set\n", key)
+	}
+	return value
+}
+
 func GetInt(key string, fallback int) int {
 	valueStr := os.Getenv(key)
 	if valueStr == "" {
