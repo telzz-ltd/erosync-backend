@@ -13,7 +13,7 @@ RUN templ generate
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/app 
 
-FROM alpine:3.14
+FROM debian:bookworm-slim
 
 COPY --from=builder /app/app /app
 
