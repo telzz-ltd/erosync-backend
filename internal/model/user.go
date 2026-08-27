@@ -103,3 +103,12 @@ func (u *User) MakeUser() {
 	u.Role = RoleUser
 	u.UpdatedAt = time.Now()
 }
+
+func (u *User) VerifyEmail() {
+	u.EmailVerifiedAt = new(time.Now())
+	u.UpdatedAt = time.Now()
+}
+
+func (u *User) EmailVerified() bool {
+	return u.EmailVerifiedAt != nil
+}

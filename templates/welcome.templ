@@ -1,0 +1,43 @@
+package templates
+
+import "erosync/internal/model"
+
+import "os"
+
+templ WelcomeMail(user model.User) {
+	@BaseEmail("Welcome") {
+		<h1 style="margin:0 0 16px; font-size:28px; line-height:36px; color:#111827;">
+			Welcome, { user.Name }!
+		</h1>
+		<p style="margin:0 0 20px; font-size:16px; line-height:26px; color:#4b5563;">
+			We're excited to have you join { appName }.
+			Your account has been created successfully.
+		</p>
+		<p style="margin:0 0 28px; font-size:16px; line-height:26px; color:#4b5563;">
+			You can now sign in and start exploring everything we have to offer.
+		</p>
+		<table role="presentation" cellspacing="0" cellpadding="0" border="0">
+			<tr>
+				<td style="border-radius:8px; background:#111827;">
+					<a
+						href={ os.Getenv("FRONTEND_URL") + "/login" }
+						style="
+          display:inline-block;
+          padding:13px 24px;
+          font-size:15px;
+          font-weight:600;
+          color:#ffffff;
+          text-decoration:none;
+          border-radius:8px;
+        "
+					>
+						Get started
+					</a>
+				</td>
+			</tr>
+		</table>
+		<p style="margin:32px 0 0; font-size:14px; line-height:22px; color:#9ca3af;">
+			If you didn't create this account, you can safely ignore this email.
+		</p>
+	}
+}

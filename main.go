@@ -36,17 +36,19 @@ func main() {
 
 	//services
 	authService := service.NewAuthService(store)
+	otpService := service.NewOTPService(store)
 
 	//routes
-	r.POST("/auth/register", handler.RegisterHandler(authService))
-	r.POST("/auth/login", handler.LoginHandler(authService))
+	r.POST("/auth/register", handler.Register(authService))
+	r.POST("/auth/login", handler.Login(authService))
 
 	{
 		//protected routes
 		r := r.Group("/")
 		r.Use(middleware.Auth)
 
-		r.POST("/verification/email/send-otp", handler.SendEmailVerificationCodeHandler(store))
+		r.POST("/verification/email/send-otp", handler.SendEmailVerificationCode(store, otpService))
+		r.POST("/verification/email/verify", handler.VerifyEmail(store, otpService))
 	}
 
 	srv := &http.Server{

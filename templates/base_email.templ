@@ -1,17 +1,62 @@
 package templates
 
+import "time"
+
+var appName = "Erosync"
+var year = time.Now().Year()
+
 templ BaseEmail(title string) {
+	<!-- layouts/email.html -->
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			if title != "" {
-				<title>{ title } | Erosync Limited</title>
-			} else {
-				<title>Erosync Limited</title>
-			}
+			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+			<title>{ title }</title>
 		</head>
-		{ children... }
+		<body style="margin:0; padding:0; background:#f4f6f8; font-family:Arial,Helvetica,sans-serif; color:#1f2937;">
+			<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f6f8; padding:40px 16px;">
+				<tr>
+					<td align="center">
+						<!-- Container -->
+						<table
+							role="presentation"
+							width="100%"
+							cellspacing="0"
+							cellpadding="0"
+							border="0"
+							style="max-width:560px; background:#ffffff; border-radius:12px; overflow:hidden;"
+						>
+							<!-- Header -->
+							<tr>
+								<td style="padding:28px 32px; border-bottom:1px solid #e5e7eb;">
+									<div style="font-size:22px; font-weight:700; color:#111827;">
+										{ appName }
+									</div>
+								</td>
+							</tr>
+							<!-- Content -->
+							<tr>
+								<td style="padding:40px 32px;">
+									{ children... }
+								</td>
+							</tr>
+							<!-- Footer -->
+							<tr>
+								<td style="padding:24px 32px; background:#f9fafb; border-top:1px solid #e5e7eb;">
+									<p style="margin:0 0 8px; font-size:13px; line-height:20px; color:#6b7280;">
+										This email was sent by { appName }.
+									</p>
+									<p style="margin:0; font-size:13px; line-height:20px; color:#9ca3af;">
+										© { year } { appName }. All rights reserved.
+									</p>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</body>
 	</html>
 }

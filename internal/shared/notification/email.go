@@ -5,9 +5,11 @@ import (
 	"erosync/internal/model"
 	"erosync/internal/shared/config"
 	"erosync/templates"
+	"log"
 	"os"
 	"strings"
 
+	"github.com/a-h/templ"
 	"github.com/wneessen/go-mail"
 )
 
@@ -41,14 +43,17 @@ func SendEmail(param SendEmailParam) error {
 
 	if os.Getenv("APP_ENV") != "production" {
 		c.SetTLSPolicy(mail.NoTLS)
+	} else {
+		c.SetUsername(os.Getenv("MAIL_USERNAME"))
+		c.SetPassword(os.Getenv("MAIL_PASSWORD"))
 	}
 
 	return c.DialAndSend(m)
 }
 
-func SendEmailVerificationMail(user model.User, code string) error {
-	var c strings.Builder
-	err := templates.VerificationCode(user, code).Render(context.Background(), &c)
+func SendEmailVerificationMail(user model.User, code string, expireMin int) error {
+	t := templates.VerificationCodeMail(user, code, expireMin)
+	content, err := TemplToString(t)
 	if err != nil {
 		return err
 	}
@@ -56,6 +61,30 @@ func SendEmailVerificationMail(user model.User, code string) error {
 	return SendEmail(SendEmailParam{
 		Subject:    "Email Verification Code",
 		Recipients: []string{user.Email},
-		Content:    c.String(),
+		Content:    content,
 	})
+}
+
+func SendWelcomeMail(user model.User) error {
+	content, err := TemplToString(templates.WelcomeMail(user))
+	if err != nil {
+		return err
+	}
+
+	return SendEmail(SendEmailParam{
+		Subject:    "Email Verification Code",
+		Recipients: []string{user.Email},
+		Content:    content,
+	})
+}
+
+func TemplToString(t templ.Component) (string, error) {
+	var c strings.Builder
+	err := t.Render(context.Background(), &c)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+
+	return c.String(), nil
 }
