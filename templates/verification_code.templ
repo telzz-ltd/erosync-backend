@@ -1,0 +1,19 @@
+package templates
+
+import "erosync/internal/model"
+
+templ VerificationCode(user model.User, code string) {
+	@BaseEmail("Verification Code") {
+		<div>
+			<p>Dear { user.Name },</p>
+			<p>Use the otp code below to complete your request</p>
+			<h3 style="font-size: 20px; color: green;">
+				<strong>{ code }</strong>
+			</h3>
+			<p>You can ignore this mail if you did not initiate this request</p>
+			<p>Thank you.</p>
+			<br/>
+			<p>Erosync Team</p>
+		</div>
+	}
+}

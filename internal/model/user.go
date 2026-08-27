@@ -22,15 +22,15 @@ var (
 )
 
 type User struct {
-	ID              string
-	Name            string
-	Email           string
-	PasswordHash    string
-	Role            Role
-	Status          Status
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	EmailVerifiedAt *time.Time
+	ID              string     `json:"id" db:"id"`
+	Name            string     `json:"name" db:"name"`
+	Email           string     `json:"email" db:"email"`
+	PasswordHash    string     `json:"-" db:"password_hash"`
+	Role            Role       `json:"role" db:"role"`
+	Status          Status     `json:"status" db:"status"`
+	CreatedAt       time.Time  `json:"createdAt" db:"created_at"`
+	UpdatedAt       time.Time  `json:"updatedAt" db:"updated_at"`
+	EmailVerifiedAt *time.Time `json:"emailVerifiedAt" db:"email_verified_at"`
 }
 
 func NewUser(id, name, email, passwordHash string) (*User, error) {

@@ -1,8 +1,8 @@
 package templates
 
-templ BaseEmail(title string, content templ.Component) {
+templ BaseEmail(title string) {
 	<!DOCTYPE html>
-	<html lang="en" data-theme="light">
+	<html lang="en">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,10 +11,7 @@ templ BaseEmail(title string, content templ.Component) {
 			} else {
 				<title>Erosync Limited</title>
 			}
-			<link rel="shortcut icon" href="/static/logo.png" type="image/x-icon"/>
 		</head>
-		<body>
-			@content
-		</body>
+		{ children... }
 	</html>
 }

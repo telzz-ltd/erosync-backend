@@ -1,15 +1,13 @@
 package store
 
-import (
-	"context"
-	"erosync/internal/model"
-)
-
-type UserStore interface {
-	Save(ctx context.Context, user *model.User) error
-	FindByEmail(email string) (*model.User, error)
-}
+import "github.com/jmoiron/sqlx"
 
 type Store struct {
-	User UserStore
+	User *users
+}
+
+func New(db *sqlx.DB) *Store {
+	return &Store{
+		User: &users{db},
+	}
 }
