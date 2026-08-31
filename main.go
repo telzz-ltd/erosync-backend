@@ -13,7 +13,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -21,10 +22,10 @@ import (
 func main() {
 	ctx := context.Background()
 
-	r := gin.Default()
-	if os.Getenv("APP_ENV") == "production" {
-		gin.SetMode(gin.ReleaseMode)
-	}
+	r := chi.NewRouter()
+	// if os.Getenv("APP_ENV") == "production" {
+	// 	gin.SetMode(gin.ReleaseMode)
+	// }
 
 	db, err := sqlx.Open("postgres", os.Getenv("DB_URL"))
 	if err != nil {
@@ -39,17 +40,16 @@ func main() {
 	otpService := service.NewOTPService(store)
 
 	//routes
-	r.POST("/auth/register", handler.Register(authService))
-	r.POST("/auth/login", handler.Login(authService))
+	r.Get("/health", handler.HealthCheck)
+	r.Post("/auth/register", handler.Register(authService))
+	r.Post("/auth/login", handler.Login(authService))
 
-	{
-		//protected routes
-		r := r.Group("/")
+	r.Group(func(r chi.Router) {
 		r.Use(middleware.Auth)
 
-		r.POST("/verification/email/send-otp", handler.SendEmailVerificationCode(store, otpService))
-		r.POST("/verification/email/verify", handler.VerifyEmail(store, otpService))
-	}
+		r.Post("/verification/email/send-otp", handler.SendEmailVerificationCode(store, otpService))
+		r.Post("/verification/email/verify", handler.VerifyEmail(store, otpService))
+	})
 
 	srv := &http.Server{
 		Addr:           ":8080",
