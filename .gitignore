@@ -6,3 +6,4 @@ sample.go
 deploy.sh
 .venv
 **/__pycache__
+create-server.sh
