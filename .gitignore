@@ -3,3 +3,6 @@ tmp
 index.html
 sample.go
 **/*templ.go
+deploy.sh
+.venv
+**/__pycache__

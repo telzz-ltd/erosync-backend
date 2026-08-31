@@ -3,3 +3,5 @@ tmp
 .envrc
 README.md
 templates/**/*.go
+.venv
+**/__pycache__
