@@ -1,0 +1,16 @@
+from typing import Protocol
+
+from .domain import User
+
+
+class FindUsersResult:
+    count: int
+    records: list[User]
+
+
+class UserStore(Protocol):
+    def save(self, user: User): ...
+    def delete_by_id(self, id: str): ...
+    def find_by_email(self, email: str) -> User: ...
+    def find_by_id(self, id: str) -> User: ...
+    def find(self, query: dict) -> FindUsersResult: ...
