@@ -9,4 +9,5 @@ from internal.otps.domain import OTP
 class PGOTPStore:
     pool: ConnectionPool
 
-    def save(self, otp: OTP): ...
+    def save(self, otp: OTP):
+        raise ValueError("method not implemented")
