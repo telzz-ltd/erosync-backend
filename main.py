@@ -1,8 +1,18 @@
 from fastapi import FastAPI
+from fastapi.concurrency import asynccontextmanager
 
+from internal.lib.db import pool
 from internal.users import user_router
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(instance: FastAPI):
+    pool.open()
+    yield
+    pool.close()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/health")

@@ -1,29 +1,33 @@
-from fastapi import APIRouter
-from psycopg_pool import ConnectionPool
+from fastapi import APIRouter, HTTPException
 
 from internal.lib import jwt
+from internal.lib.db import pool
 from internal.pg_store.users import PGUserStore
 
-from .schema import ForgotPassword, Login, RegisterUser, ResetPassword
+from .schema import ForgotPassword, Login, RegisterUser, ResetPassword, UserResponse
 from .service import UserService
 
 router = APIRouter()
 
+store = PGUserStore(pool)
+service = UserService(store)
+
 
 @router.post("/auth/register")
 def register(dto: RegisterUser):
-    with ConnectionPool() as pool:
-        store = PGUserStore(pool)
-        service = UserService(store)
-
-        user = service.create(dto)
-        access_token = jwt.encode({"sub": user.id, "role": user.role})
-        return {"accessToken": access_token}
+    user = service.create(dto)
+    access_token = jwt.encode({"sub": user.id, "role": user.role})
+    return {"accessToken": access_token, "user": UserResponse(user)}
 
 
 @router.post("/auth/login")
 def login(dto: Login):
-    return {"data": dto}
+    user = store.find_by_email(dto.email)
+    if user is None:
+        raise HTTPException(400, {"message": "user not found"})
+
+    access_token = jwt.encode({"sub": user.id, "role": user.role})
+    return {"accessToken": access_token, "user": UserResponse(user)}
 
 
 @router.post("/auth/forgot-password")

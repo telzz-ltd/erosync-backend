@@ -14,18 +14,40 @@ class User:
     updated_at: dt.datetime
     email_verified_at: dt.datetime | None = None
 
-    def __init__(self, id: str, name: str, email: str, password_hash: str) -> None:
-        if not id or not name or not email or not password_hash:
-            raise ValueError("all fields are required")
-
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        email: str,
+        password_hash: str,
+        role: Role = Role.USER,
+        status: Status = Status.ACTIVE,
+        created_at: dt.datetime | None = None,
+        updated_at: dt.datetime | None = None,
+        email_verified_at: dt.datetime | None = None,
+    ) -> None:
         self.id = id
         self.name = name
         self.email = email
-        self.status = Status.ACTIVE
-        self.role = Role.USER
         self.password_hash = password_hash
-        self.created_at = dt.datetime.now(dt.timezone.utc)
-        self.touch()
+        self.status = status
+        self.role = role
+
+        now = dt.datetime.now(dt.timezone.utc)
+        self.created_at = created_at if created_at is not None else now
+        self.updated_at = updated_at if updated_at is not None else now
+
+    @staticmethod
+    def create(id: str, name: str, email: str, password_hash: str):
+        if not id or not name or not email or not password_hash:
+            raise ValueError("all fields are required")
+
+        return User(
+            id=id,
+            name=name,
+            email=email,
+            password_hash=password_hash,
+        )
 
     def change_password(self, password_hash: str):
         if password_hash:
