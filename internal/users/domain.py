@@ -37,12 +37,12 @@ class User:
         self.created_at = created_at if created_at is not None else now
         self.updated_at = updated_at if updated_at is not None else now
 
-    @staticmethod
-    def create(id: str, name: str, email: str, password_hash: str):
+    @classmethod
+    def create(cls, id: str, name: str, email: str, password_hash: str):
         if not id or not name or not email or not password_hash:
             raise ValueError("all fields are required")
 
-        return User(
+        return cls(
             id=id,
             name=name,
             email=email,

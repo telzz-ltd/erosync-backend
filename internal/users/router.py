@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from internal.lib import jwt
 from internal.lib.db import pool
-from internal.pg_store.users import PGUserStore
+from internal.pg_store.user_store import PGUserStore
 
 from .schema import ForgotPassword, Login, RegisterUser, ResetPassword, UserResponse
 from .service import UserService
