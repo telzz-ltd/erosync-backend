@@ -1,0 +1,28 @@
+info:
+  name: Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{url}}/auth/login"
+  body:
+    type: json
+    data: |
+      {"email": "baba@example.com", "password": "pass1234"}
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const body = await res.getBody();
+        if (body.refreshToken) {
+            bru.setCollectionVar("refreshToken", body.refreshToken);
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

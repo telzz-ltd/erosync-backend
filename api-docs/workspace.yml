@@ -1,0 +1,12 @@
+opencollection: 1.0.0
+info:
+  name: "erosync"
+  type: workspace
+
+collections:
+  - name: "Erosync v1"
+    path: "collections/v1"
+
+specs:
+
+docs: ''

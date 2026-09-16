@@ -1,0 +1,5 @@
+name: Local
+variables:
+  - name: url
+    value: http://localhost:8080
+    description: ""
