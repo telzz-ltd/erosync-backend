@@ -15,6 +15,7 @@ class OTPPurpose(StrEnum):
     RESET_PASSWORD = "RESET_PASSWORD"
 
 
+
 @dataclass
 class OTP:
     recipient: str

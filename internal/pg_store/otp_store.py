@@ -10,4 +10,4 @@ class PGOTPStore:
     pool: ConnectionPool
 
     def save(self, otp: OTP):
-        raise ValueError("method not implemented")
+        raise SyntaxError("method not implemented")

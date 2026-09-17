@@ -52,6 +52,9 @@ class PGUserStore:
                 "SELECT * FROM users WHERE email = %s LIMIT 1;", (email,)
             ).fetchone()
 
+    def exist_by_email(self, email: str) -> bool:
+        raise SyntaxError("method not implemented")
+
     def find_by_id(self, id: str) -> User:
         raise SyntaxError("method not implemented")
 
