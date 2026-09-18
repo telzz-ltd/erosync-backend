@@ -1,51 +1,13 @@
-package handler
+package users
 
 import (
-	"erosync/internal/dto"
-	"erosync/internal/model"
+	"erosync/internal/lib/app"
+	"erosync/internal/lib/notification"
 	"erosync/internal/service"
-	"erosync/internal/shared/app"
-	"erosync/internal/shared/notification"
 	"erosync/internal/store"
 	"log"
 	"net/http"
 )
-
-func Register(s *service.AuthService) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var req dto.RegisterRequest
-		if err := app.ShouldBindJSON(r, &req); err != nil {
-			app.JSON(w, 400, app.H{"message": err.Error()})
-			return
-		}
-
-		resp, err := s.Register(req)
-		if err != nil {
-			app.JSON(w, 500, app.H{"message": err.Error()})
-			return
-		}
-
-		app.JSON(w, 201, resp)
-	}
-}
-
-func Login(s *service.AuthService) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var req dto.LoginRequest
-		if err := app.ShouldBindJSON(r, &req); err != nil {
-			app.JSON(w, 400, app.H{"message": err.Error()})
-			return
-		}
-
-		resp, err := s.Login(req)
-		if err != nil {
-			app.JSON(w, 500, app.H{"message": err.Error()})
-			return
-		}
-
-		app.JSON(w, 201, resp)
-	}
-}
 
 func SendEmailVerificationCode(store *store.Store, otps *service.OTPService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"erosync/internal/handler"
+	"erosync/internal/lib/app"
 	"erosync/internal/middleware"
 	"erosync/internal/service"
 	"erosync/internal/store"
@@ -40,7 +41,10 @@ func main() {
 	otpService := service.NewOTPService(store)
 
 	//routes
-	r.Get("/health", handler.HealthCheck)
+	r.Get("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		app.JSON(w, 200, app.H{"message": "app working fine"})
+	}))
+
 	r.Post("/auth/register", handler.Register(authService))
 	r.Post("/auth/login", handler.Login(authService))
 
