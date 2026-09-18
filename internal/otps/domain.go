@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	OTPChannelEmail = "EMAIL"
-	OTPChannelSMS   = "SMS"
+	ChannelEmail = "EMAIL"
+	ChannelSMS   = "SMS"
 
-	OTPPurposeVerifyEmail   = "verify_email"
-	OTPPurposeResetPassword = "reset_password"
+	PurposeVerifyEmail   = "verify_email"
+	PurposeResetPassword = "reset_password"
 )
 
 type OTP struct {

@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"erosync/internal/lib/security"
 	"erosync/internal/users"
-	user_ports "erosync/internal/users/ports"
 	"errors"
 	"time"
 
@@ -13,10 +12,10 @@ import (
 )
 
 type CreateAccount struct {
-	repo user_ports.Repository
+	repo users.Repository
 }
 
-func NewCreateAccount(repo user_ports.Repository) *CreateAccount {
+func NewCreateAccount(repo users.Repository) *CreateAccount {
 	return &CreateAccount{repo}
 }
 
