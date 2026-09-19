@@ -1,6 +1,7 @@
 package users
 
 import (
+	"erosync/internal/infrastructure/http/handlers"
 	"erosync/internal/lib"
 	"erosync/internal/middleware"
 	"erosync/internal/otps"
@@ -16,6 +17,7 @@ func New(repo Repository, otpService otps.Service, tx lib.Tx) *Module {
 }
 
 func (m *Module) RegisterRoutes(r chi.Router) {
+	handler := handlers.NewUserHandler()
 	r.Post("/auth/register", handler.Register(authService))
 	r.Post("/auth/login", handler.Login(authService))
 
