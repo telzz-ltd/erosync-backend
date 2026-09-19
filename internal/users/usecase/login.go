@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"erosync/internal/lib/security"
 	"erosync/internal/users"
-	"erosync/internal/users/ports"
 	"errors"
 	"time"
 
@@ -13,7 +12,7 @@ import (
 )
 
 type Login struct {
-	repo ports.Repository
+	repo users.Repository
 }
 
 type LoginCommand struct {

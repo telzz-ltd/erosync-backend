@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"erosync/internal/shared/app"
-	"erosync/internal/shared/security"
+	"erosync/internal/lib/app"
+	"erosync/internal/lib/security"
 	"log"
 	"net/http"
 	"strings"

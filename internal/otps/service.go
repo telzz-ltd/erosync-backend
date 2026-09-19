@@ -1,8 +1,8 @@
 package otps
 
 import (
+	"context"
 	"crypto/rand"
-	"erosync/internal/store"
 	"errors"
 	"fmt"
 	"log"
@@ -12,11 +12,11 @@ import (
 )
 
 type Service struct {
-	store *store.Store
+	repo Repository
 }
 
-func NewService(s *store.Store) *Service {
-	return &Service{s}
+func NewService(r Repository) *Service {
+	return &Service{r}
 }
 
 type ValidateOTPParam struct {
@@ -26,8 +26,8 @@ type ValidateOTPParam struct {
 	Recipient string
 }
 
-func (s *Service) Validate(param ValidateOTPParam) error {
-	otp, err := s.store.Otp.FindOne(store.FindOTPParam{
+func (s *Service) Validate(ctx context.Context, param ValidateOTPParam) error {
+	otp, err := s.repo.FindOne(FindOTPParam{
 		Channel:   param.Channel,
 		Recipient: param.Recipient,
 		Purpose:   param.Purpose,
@@ -35,14 +35,11 @@ func (s *Service) Validate(param ValidateOTPParam) error {
 	if err != nil {
 		return err
 	}
-	if otp == nil {
-		return errors.New("otp not found")
-	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(otp.CodeHash), []byte(param.Code)); err != nil {
 		if otp.Valid() {
 			otp.IncreaseAttempt()
-			if err := s.store.Otp.Save(otp); err != nil {
+			if err := s.repo.Save(ctx, otp); err != nil {
 				log.Printf("unable to save otp: %v", err)
 			}
 		}
@@ -50,13 +47,13 @@ func (s *Service) Validate(param ValidateOTPParam) error {
 	}
 
 	if !otp.Valid() {
-		if err := s.store.Otp.Delete(otp); err != nil {
+		if err := s.repo.Delete(ctx, otp); err != nil {
 			log.Panicln("unable to delete otp: ", err)
 		}
 		return errors.New("invalid otp")
 	}
 
-	return s.store.Otp.Delete(otp)
+	return s.repo.Delete(ctx, otp)
 }
 
 type CreateOTPParam struct {
@@ -66,7 +63,7 @@ type CreateOTPParam struct {
 	ExpireMin int
 }
 
-func (s *Service) Create(param CreateOTPParam) (string, error) {
+func (s *Service) Create(ctx context.Context, param CreateOTPParam) (string, error) {
 	n, err := rand.Int(rand.Reader, big.NewInt(999999))
 	if err != nil {
 		return "", err
@@ -83,7 +80,7 @@ func (s *Service) Create(param CreateOTPParam) (string, error) {
 		return "", err
 	}
 
-	err = s.store.Otp.Save(otp)
+	err = s.repo.Save(ctx, *otp)
 	if err != nil {
 		return "", err
 	}

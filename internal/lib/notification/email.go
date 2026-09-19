@@ -2,8 +2,8 @@ package notification
 
 import (
 	"context"
-	"erosync/internal/model"
-	"erosync/internal/shared/config"
+	"erosync/internal/lib/config"
+	"erosync/internal/users"
 	"erosync/templates"
 	"log"
 	"os"
@@ -51,7 +51,7 @@ func SendEmail(param SendEmailParam) error {
 	return c.DialAndSend(m)
 }
 
-func SendEmailVerificationMail(user model.User, code string, expireMin int) error {
+func SendEmailVerificationMail(user users.User, code string, expireMin int) error {
 	t := templates.VerificationCodeMail(user, code, expireMin)
 	content, err := TemplToString(t)
 	if err != nil {
@@ -65,7 +65,7 @@ func SendEmailVerificationMail(user model.User, code string, expireMin int) erro
 	})
 }
 
-func SendWelcomeMail(user model.User) error {
+func SendWelcomeMail(user users.User) error {
 	content, err := TemplToString(templates.WelcomeMail(user))
 	if err != nil {
 		return err
