@@ -8,11 +8,15 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type OtpRepository struct {
+type OTPRepository struct {
 	db *pgxpool.Pool
 }
 
-func (r *OtpRepository) Save(ctx context.Context, otp *otps.OTP) error {
+func NewOTPRepository(db *pgxpool.Pool) *OTPRepository {
+	return &OTPRepository{db}
+}
+
+func (r *OTPRepository) Save(ctx context.Context, otp otps.OTP) error {
 	db := GetExecutor(ctx, r.db)
 
 	_, err := db.Exec(ctx,
@@ -40,7 +44,7 @@ func (r *OtpRepository) Save(ctx context.Context, otp *otps.OTP) error {
 	return err
 }
 
-func (r *OtpRepository) FindOne(param otps.FindOTPParam) (otps.OTP, error) {
+func (r *OTPRepository) FindOne(param otps.FindOTPParam) (otps.OTP, error) {
 	sql := "SELECT * FROM otps WHERE recipient = $1 AND channel = $2 AND purpose = $3 LIMIT 1;"
 	rows, err := r.db.Query(context.Background(), sql, param.Recipient, param.Channel, param.Purpose)
 	if err != nil {
@@ -55,7 +59,7 @@ func (r *OtpRepository) FindOne(param otps.FindOTPParam) (otps.OTP, error) {
 	return otp, nil
 }
 
-func (r *OtpRepository) Delete(ctx context.Context, otp otps.OTP) error {
+func (r *OTPRepository) Delete(ctx context.Context, otp otps.OTP) error {
 	db := GetExecutor(ctx, r.db)
 
 	_, err := db.Exec(ctx,

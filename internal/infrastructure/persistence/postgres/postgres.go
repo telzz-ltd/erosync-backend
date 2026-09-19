@@ -29,6 +29,10 @@ type Tx struct {
 	db *pgxpool.Pool
 }
 
+func NewTx(db *pgxpool.Pool) Tx {
+	return Tx{db}
+}
+
 func (tx Tx) Execute(ctx context.Context, cb func(ctx context.Context) error) error {
 	_tx, err := tx.db.Begin(ctx)
 	if err != nil {

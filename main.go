@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
-	"erosync/internal/handler"
+	"erosync/internal/infrastructure/persistence/postgres"
 	"erosync/internal/lib/app"
-	"erosync/internal/middleware"
-	"erosync/internal/service"
-	"erosync/internal/store"
+	"erosync/internal/otps"
+	"erosync/internal/users"
 	"log"
 	"net/http"
 	"os"
@@ -15,8 +14,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
@@ -28,32 +27,29 @@ func main() {
 	// 	gin.SetMode(gin.ReleaseMode)
 	// }
 
-	db, err := sqlx.Open("postgres", os.Getenv("DB_URL"))
+	db, err := pgxpool.New(ctx, os.Getenv("DB_URL"))
 	if err != nil {
 		log.Fatalln("uanble to connect to db", err)
 	}
 
 	//adapters
-	store := store.New(db)
+	tx := postgres.NewTx(db)
 
-	//services
-	authService := service.NewAuthService(store)
-	otpService := service.NewOTPService(store)
+	//repositories
+	userRepo := postgres.NewUserRepository(db)
+	otpRepo := postgres.NewOTPRepository(db)
+
+	//modules
+	otpModule := otps.New(otpRepo)
+	userModule := users.New(userRepo, otpModule.Service, tx)
 
 	//routes
 	r.Get("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		app.JSON(w, 200, app.H{"message": "app working fine"})
 	}))
 
-	r.Post("/auth/register", handler.Register(authService))
-	r.Post("/auth/login", handler.Login(authService))
-
-	r.Group(func(r chi.Router) {
-		r.Use(middleware.Auth)
-
-		r.Post("/verification/email/send-otp", handler.SendEmailVerificationCode(store, otpService))
-		r.Post("/verification/email/verify", handler.VerifyEmail(store, otpService))
-	})
+	//routes register
+	userModule.RegisterRoutes(r)
 
 	srv := &http.Server{
 		Addr:           ":8080",

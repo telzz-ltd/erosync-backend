@@ -12,6 +12,10 @@ type UserRepository struct {
 	db *pgxpool.Pool
 }
 
+func NewUserRepository(db *pgxpool.Pool) *UserRepository {
+	return &UserRepository{db}
+}
+
 func (r *UserRepository) Save(ctx context.Context, user users.User) error {
 	db := GetExecutor(ctx, r.db)
 	_, err := db.Exec(ctx,
