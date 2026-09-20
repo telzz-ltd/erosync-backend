@@ -1,4 +1,4 @@
-package users
+package domain
 
 import (
 	"errors"
@@ -8,17 +8,17 @@ import (
 	"time"
 )
 
-type Status string
-type Role string
+type UserStatus string
+type UserRole string
 
 var (
-	StatusActive    Status = "ACTIVE"
-	StatusInactive  Status = "INACTIVE"
-	StatusSuspended Status = "SUSPENDED"
+	UserStatusActive    UserStatus = "ACTIVE"
+	UserStatusInactive  UserStatus = "INACTIVE"
+	UserStatusSuspended UserStatus = "SUSPENDED"
 
-	RoleUser      Role = "USER"
-	RoleAdmin     Role = "ADMIN"
-	RoleModerator Role = "MODERATOR"
+	UserRoleUser      UserRole = "USER"
+	UserRoleAdmin     UserRole = "ADMIN"
+	UserRoleModerator UserRole = "MODERATOR"
 )
 
 type User struct {
@@ -26,14 +26,14 @@ type User struct {
 	Name            string     `json:"name" db:"name"`
 	Email           string     `json:"email" db:"email"`
 	PasswordHash    string     `json:"-" db:"password_hash"`
-	Role            Role       `json:"role" db:"role"`
-	Status          Status     `json:"status" db:"status"`
+	Role            UserRole   `json:"role" db:"role"`
+	Status          UserStatus `json:"status" db:"status"`
 	CreatedAt       time.Time  `json:"createdAt" db:"created_at"`
 	UpdatedAt       time.Time  `json:"updatedAt" db:"updated_at"`
 	EmailVerifiedAt *time.Time `json:"emailVerifiedAt" db:"email_verified_at"`
 }
 
-func NewUser(id, name, email, passwordHash string) (*User, error) {
+func NewUser(id, name, email, passwordHash string) (User, error) {
 	id = strings.TrimSpace(id)
 	name = strings.TrimSpace(name)
 	email = strings.TrimSpace(email)
@@ -62,45 +62,45 @@ func NewUser(id, name, email, passwordHash string) (*User, error) {
 		Name:         name,
 		Email:        emailAddr.Address,
 		PasswordHash: passwordHash,
-		Role:         RoleUser,
-		Status:       StatusActive,
+		Role:         UserRoleUser,
+		Status:       UserStatusActive,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}, nil
 }
 
 func (u *User) MakeAdmin() {
-	u.Role = RoleAdmin
+	u.Role = UserRoleAdmin
 	u.UpdatedAt = time.Now()
 }
 
 func (u *User) Deactivate() {
-	u.Status = StatusInactive
+	u.Status = UserStatusInactive
 	u.UpdatedAt = time.Now()
 }
 
 func (u *User) Activate() {
-	u.Status = StatusActive
+	u.Status = UserStatusActive
 	u.UpdatedAt = time.Now()
 }
 
 func (u *User) Suspend() {
-	u.Status = StatusSuspended
+	u.Status = UserStatusSuspended
 	u.UpdatedAt = time.Now()
 }
 
 func (u *User) SetModerator() {
-	u.Role = RoleModerator
+	u.Role = UserRoleModerator
 	u.UpdatedAt = time.Now()
 }
 
 func (u *User) MakeModerator() {
-	u.Role = RoleModerator
+	u.Role = UserRoleModerator
 	u.UpdatedAt = time.Now()
 }
 
 func (u *User) MakeUser() {
-	u.Role = RoleUser
+	u.Role = UserRoleUser
 	u.UpdatedAt = time.Now()
 }
 
