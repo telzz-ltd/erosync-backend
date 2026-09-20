@@ -1,8 +1,6 @@
 import datetime as dt
 from dataclasses import dataclass
 from enum import StrEnum
-from pyexpat import expat_CAPI
-from time import timezone
 
 
 class OTPChannel(StrEnum):

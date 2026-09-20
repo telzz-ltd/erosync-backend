@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="margin:0 0 16px; font-size:28px; line-height:36px; color:#111827;">
+    Verify your email
+</h1>
+<p style="margin:0 0 24px; font-size:16px; line-height:26px; color:#4b5563;">
+    Hi {{ name }}, use the verification code below to confirm your email address.
+</p>
+<!-- Verification code -->
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 28px;">
+    <tr>
+        <td align="center" style="
+        padding:24px;
+        background:#f3f4f6;
+        border:1px solid #e5e7eb;
+        border-radius:10px;
+      ">
+            <div style="
+          font-size:32px;
+          line-height:40px;
+          font-weight:700;
+          letter-spacing:8px;
+          color:#111827;
+        ">
+                {{ code }}
+            </div>
+        </td>
+    </tr>
+</table>
+<p style="margin:0 0 12px; font-size:14px; line-height:22px; color:#6b7280;">
+    This code will expire in <strong>{{ expire_min }} minutes</strong>.
+</p>
+<p style="margin:0; font-size:14px; line-height:22px; color:#9ca3af;">
+    If you didn't request this code, you can safely ignore this email.
+</p>
+{% endblock %}

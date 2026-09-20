@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response
 from psycopg.errors import UniqueViolation
 
 import bcrypt
@@ -9,6 +9,7 @@ from internal.pg_store.user_store import PGUserStore
 
 from .schema import ForgotPassword, Login, RegisterUser, ResetPassword, UserResponse
 from .service import UserService
+from internal.lib.email import load_template, send_mail
 
 router = APIRouter()
 
@@ -49,8 +50,13 @@ def reset_password(dto: ResetPassword):
     return {"data": dto}
 
 
-@router.post("/verification/email/send-otp")
+@router.post("/verification/email/send-otp", )
 def send_email_verification_code():
+    content=load_template("welcome", )
+    send_mail("welcome", args={
+        "app_url": "http://localhost:8080", "app_name": "Erosync LTD.", "name": "Usman", "expire_min": 6, "year": 2026, "code": "556770"
+    })
+    return Response(content=content, media_type="text/html")
     return {"message": "email sent"}
 
 
