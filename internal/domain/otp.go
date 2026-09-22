@@ -1,4 +1,4 @@
-package otps
+package domain
 
 import (
 	"errors"
@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	ChannelEmail = "EMAIL"
-	ChannelSMS   = "SMS"
+	OTPChannelEmail = "EMAIL"
+	OTPChannelSMS   = "SMS"
 
-	PurposeVerifyEmail   = "verify_email"
-	PurposeResetPassword = "reset_password"
+	OTPPurposeVerifyEmail   = "verify_email"
+	OTPPurposeResetPassword = "reset_password"
 )
 
 type OTP struct {

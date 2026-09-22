@@ -2,7 +2,7 @@ space := $(empty) $(empty)
 goose_env := GOOSE_DRIVER=postgres GOOSE_DBSTRING=$(DB_URL) GOOSE_MIGRATION_DIR=./migrations
 
 templ:
-	templ generate --watch --cmd="go run ."
+	templ generate --watch --cmd="go run cmd/app"
 
 .PHONY: migration
 migration:
