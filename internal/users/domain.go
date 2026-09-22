@@ -33,31 +33,31 @@ type User struct {
 	EmailVerifiedAt *time.Time `json:"emailVerifiedAt" db:"email_verified_at"`
 }
 
-func NewUser(id, name, email, passwordHash string) (*User, error) {
+func NewUser(id, name, email, passwordHash string) (User, error) {
 	id = strings.TrimSpace(id)
 	name = strings.TrimSpace(name)
 	email = strings.TrimSpace(email)
 	passwordHash = strings.TrimSpace(passwordHash)
 
 	if id == "" || name == "" || email == "" || passwordHash == "" {
-		return nil, errors.New("all fields must not be empty")
+		return User{}, errors.New("all fields must not be empty")
 	}
 
 	if len(passwordHash) < 8 {
-		return nil, errors.New("password must be 8 or more chars")
+		return User{}, errors.New("password must be 8 or more chars")
 	}
 
 	emailAddr, err := mail.ParseAddress(email)
 	if err != nil {
-		return nil, err
+		return User{}, err
 	}
 
 	matched, err := regexp.MatchString("^[a-zA-Z]{3,}(?: [a-zA-Z]{3,}){1,2}$", name)
 	if !matched || err != nil {
-		return nil, errors.New("invalid name")
+		return User{}, errors.New("invalid name")
 	}
 
-	return &User{
+	return User{
 		ID:           id,
 		Name:         name,
 		Email:        emailAddr.Address,

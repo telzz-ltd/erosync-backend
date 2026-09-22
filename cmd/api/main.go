@@ -45,7 +45,7 @@ func main() {
 
 	//routes
 	r.Get("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		app.JSON(w, 200, app.H{"message": "app working fine"})
+		app.JSON(w, 200, app.Map{"message": "app working fine"})
 	}))
 
 	//routes register
