@@ -1,4 +1,4 @@
-package com.telzz.erosync.users;
+package com.telzz.erosync.users.ports;
 
 import java.util.List;
 import java.util.Optional;

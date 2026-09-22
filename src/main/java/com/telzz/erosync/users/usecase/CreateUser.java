@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.telzz.erosync.users.UserRepository;
 import com.telzz.erosync.users.domain.EmailExistException;
 import com.telzz.erosync.users.domain.User;
+import com.telzz.erosync.users.ports.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
