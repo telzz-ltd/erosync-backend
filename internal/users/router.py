@@ -52,11 +52,19 @@ def reset_password(dto: ResetPassword):
 
 @router.post("/verification/email/send-otp", )
 def send_email_verification_code():
-    content=load_template("welcome", )
-    send_mail("welcome", args={
-        "app_url": "http://localhost:8080", "app_name": "Erosync LTD.", "name": "Usman", "expire_min": 6, "year": 2026, "code": "556770"
-    })
-    return Response(content=content, media_type="text/html")
+    send_mail(
+        template="welcome",
+        to="baba@test.com",
+        subject="Welcome to Erosync",
+        template_args={
+            "app_url": "http://localhost:8080",
+            "app_name": "Erosync LTD.",
+            "name": "Usman",
+            "expire_min": 6,
+            "year": 2026,
+            "code": "556770"
+        }
+    )
     return {"message": "email sent"}
 
 
