@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0f1d25f9-cfea-4ca6-aa06-0e3168d0ee2d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/telzz/erosync/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/api/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/application/app.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/application/routes.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/domain/otp.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/domain/user.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/infrastructure/http/router/users.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lib/app/request.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lib/app/respose.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lib/app/validator.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lib/config/env.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lib/notification/email.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lib/security/jwt.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lib/tx.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/middleware/auth_middleware.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/notification/email.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/notification/notification.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/otps/module.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/otps/service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/persistence/postgres/otp_repository.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/persistence/postgres/postgres.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/persistence/postgres/users_repository.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/ports/otp.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/ports/otps.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/ports/users.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/schema/user.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/auth_service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/otp_service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/users_service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/errors.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/handler.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/module.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/ports.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/schema.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/usecase.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/usecase/send_email_verification.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/usecase/verify_email.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/layout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/verify_email.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/verify_email.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/welcome.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/welcome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.go" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3JgTdvMbScrIL8lSzR6BitD9fPQ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "v1-java",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/palmpay/dev/erosync-backend",
+    "node.js.detected.package.jshint": "true",
+    "node.js.selected.package.jshint": "",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/templates" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="erosync-backend" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="erosync-backend" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="erosync-backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="erosync-backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-63390994e64e-intellij.indexing.shared.core-IU-262.8665.337" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0f1d25f9-cfea-4ca6-aa06-0e3168d0ee2d" name="Changes" comment="" />
+      <created>1790081803899</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790081803899</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
