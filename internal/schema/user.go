@@ -1,6 +1,8 @@
 package schema
 
-type CreateUserRequest struct {
+import "erosync/internal/domain"
+
+type RegisterRequest struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=8,max=50"`
@@ -16,7 +18,7 @@ type VerifyEmailRequest struct {
 }
 
 type AuthResponse struct {
-	User         User   `json:"user"`
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
+	User         domain.User `json:"user"`
+	AccessToken  string      `json:"accessToken"`
+	RefreshToken string      `json:"refreshToken"`
 }
