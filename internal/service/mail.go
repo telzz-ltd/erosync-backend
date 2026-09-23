@@ -14,31 +14,37 @@ import (
 )
 
 type MailService struct {
-	host     string
-	port     int
-	username string
-	password string
-	from     string
+	config MailConfig
 }
 
-func NewMailService(host string, port int, user, password, from string) *MailService {
-	return &MailService{host, port, user, password, from}
+type MailConfig struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	From     string
+}
+
+func NewMailService(config MailConfig) *MailService {
+	return &MailService{config}
 }
 
 func (s *MailService) VerifyEmail(user domain.User, code string) error {
 	return s.Send(context.Background(), SendMailParam{
-		Template:   "verify_email",
+		Template:   "verify_email.html",
 		Recipients: []string{user.Email},
+		Subject:    "Email Verification Code",
 		Args: map[string]any{
-			"name": strings.Split(user.Name, " ")[0],
-			"code": code,
+			"name":    strings.Split(user.Name, " ")[0],
+			"code":    code,
+			"minutes": 10,
 		},
 	})
 }
 
 func (s *MailService) ResetPassword(user domain.User, code string) error {
 	return s.Send(context.Background(), SendMailParam{
-		Template:   "reset_password",
+		Template:   "reset_password.html",
 		Recipients: []string{user.Email},
 		Args: map[string]any{
 			"name": strings.Split(user.Name, " ")[0],
@@ -49,7 +55,7 @@ func (s *MailService) ResetPassword(user domain.User, code string) error {
 
 func (s *MailService) Welcome(user domain.User) error {
 	return s.Send(context.Background(), SendMailParam{
-		Template:   "welcome",
+		Template:   "welcome.html",
 		Recipients: []string{user.Email},
 		Args: map[string]any{
 			"name": strings.Split(user.Name, " ")[0],
@@ -66,7 +72,7 @@ type SendMailParam struct {
 
 func (m *MailService) Send(ctx context.Context, param SendMailParam) error {
 	msg := mail.NewMsg()
-	if err := msg.From(m.from); err != nil {
+	if err := msg.From(m.config.From); err != nil {
 		return err
 	}
 
@@ -84,15 +90,17 @@ func (m *MailService) Send(ctx context.Context, param SendMailParam) error {
 
 	msg.SetBodyString(mail.TypeTextHTML, bodyString)
 
-	client, err := mail.NewClient(m.host, mail.WithPort(m.port))
+	client, err := mail.NewClient(m.config.Host, mail.WithPort(m.config.Port))
 	if err != nil {
 		return err
 	}
 
-	if strings.TrimSpace(m.username) != "" && strings.TrimSpace(m.password) != "" {
+	if strings.TrimSpace(m.config.Username) != "" && strings.TrimSpace(m.config.Password) != "" {
 		client.SetSMTPAuth(mail.SMTPAuthPlain)
-		client.SetUsername(m.username)
-		client.SetPassword(m.password)
+		client.SetUsername(m.config.Username)
+		client.SetPassword(m.config.Password)
+	} else {
+		client.SetTLSPolicy(mail.NoTLS)
 	}
 
 	return client.DialAndSendWithContext(ctx, msg)
@@ -102,7 +110,7 @@ func (m *MailService) loadTemplate(filename string, args map[string]any) (string
 	cwd, _ := os.Getwd()
 
 	file1 := path.Join(cwd, "templates", "layout.html")
-	file2 := path.Join(cwd, "templates", filename+".html")
+	file2 := path.Join(cwd, "templates", filename)
 	tmpl, err := template.ParseFiles(file1, file2)
 	if err != nil {
 		panic(err)

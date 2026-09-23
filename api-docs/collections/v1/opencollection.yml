@@ -13,6 +13,11 @@ config:
         username: ""
         password: ""
       bypassProxy: ""
+
+request:
+  variables:
+    - name: refreshToken
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJSb2xlIjoiVVNFUiIsImlzcyI6IkVyb3N5bmMgTHRkIiwic3ViIjoiMDFhMGEyNWQtZGVhZS03MmExLTk1YTctYTdhNWU5NTQwNmZiIiwiZXhwIjoxNzkwMjQzMzU1LCJpYXQiOjE3OTAxNTY5NTV9.VYBhfly4un43XimV9jbF95aGBz-CSzYbna4Lm00knnU
 bundled: false
 extensions:
   bruno:

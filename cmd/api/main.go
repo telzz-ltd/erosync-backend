@@ -12,7 +12,7 @@ func main() {
 
 	app := application.New(cfg, store)
 
-	h := app.RegisterRouter()
+	h := app.RegisterRoutes()
 
 	app.Run(cfg.Port, h)
 }

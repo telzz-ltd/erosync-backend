@@ -34,8 +34,11 @@ func New(dbUrl string) *port.Store {
 	}
 
 	return &port.Store{
-		User: NewUserRepository(db),
-		Otp:  NewOTPRepository(db),
-		Tx:   NewTx(db),
+		Tx: NewTx(db),
+
+		User:          NewUserRepository(db),
+		Otp:           NewOTPRepository(db),
+		Brand:         NewBrandRepository(db),
+		BrandCategory: NewBrandCategoryRepository(db),
 	}
 }

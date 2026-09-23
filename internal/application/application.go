@@ -9,33 +9,44 @@ import (
 )
 
 type Application struct {
-	config  *config.Config
-	store   *port.Store
-	handler *handler.Handler
+	Config  *config.Config
+	Store   *port.Store
+	Handler *handler.Handler
+
+	//services
+	Users *service.UserService
+	Otps  *service.OtpService
+	Mail  *service.MailService
+	Jwt   *service.JwtService
+
+	Validator *validator.Validator
 }
 
 func New(cfg *config.Config, store *port.Store) *Application {
-	validator := validator.New()
-	userService := service.NewUserService(store.User)
-	otpService := service.NewOtpService(store.Otp)
-	mailService := service.NewMailService(
-		cfg.MailHost,
-		cfg.MailPort,
-		cfg.MailUsername,
-		cfg.MailPassword,
-		cfg.MailFrom,
-	)
-	jwtService := service.NewJwtService(cfg.JwtSecret)
+	app := &Application{
+		Config: cfg,
+		Store:  store,
 
-	return &Application{
-		config: cfg,
-		store:  store,
-		handler: handler.New(
-			validator,
-			userService,
-			otpService,
-			mailService,
-			jwtService,
-		),
+		Validator: validator.New(),
+		Users:     service.NewUserService(store.User),
+		Otps:      service.NewOtpService(store.Otp),
+		Mail: service.NewMailService(service.MailConfig{
+			Host:     cfg.MailHost,
+			Port:     cfg.MailPort,
+			Username: cfg.MailUsername,
+			Password: cfg.MailPassword,
+			From:     cfg.MailFrom,
+		}),
+		Jwt: service.NewJwtService(cfg.JwtSecret),
 	}
+
+	app.Handler = handler.New(
+		app.Validator,
+		app.Users,
+		app.Otps,
+		app.Mail,
+		app.Jwt,
+	)
+
+	return app
 }

@@ -11,6 +11,8 @@ type TxManager interface {
 type Store struct {
 	Tx TxManager
 
-	User UserRepository
-	Otp  OtpRepository
+	User          UserRepository
+	Otp           OtpRepository
+	Brand         BrandRepository
+	BrandCategory BrandCategoryRepository
 }
