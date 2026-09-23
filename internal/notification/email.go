@@ -3,6 +3,7 @@ package notification
 import (
 	"context"
 	"html/template"
+	"maps"
 	"os"
 	"path"
 	"strings"
@@ -73,14 +74,16 @@ func (m *Mailer) loadTemplate(filename string, args map[string]any) (string, err
 		panic(err)
 	}
 
-	strings.Builder
+	var sb strings.Builder
 
-	tmpl.Execute(os.Stdout, map[string]any{
-		"subject": "Verify Email",
-		"name":    "Usman",
+	tmplArgs := map[string]any{
 		"appUrl":  "http://localhost:8080",
 		"year":    time.Now().Year(),
 		"appName": "Erosync",
-	})
-	return "", nil
+	}
+
+	maps.Copy(tmplArgs, args)
+	tmpl.Execute(&sb, tmplArgs)
+
+	return sb.String(), nil
 }

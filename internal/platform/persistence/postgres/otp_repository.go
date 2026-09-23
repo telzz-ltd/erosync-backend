@@ -44,19 +44,19 @@ func (r *OTPRepository) Save(ctx context.Context, otp otps.OTP) error {
 	return err
 }
 
-func (r *OTPRepository) FindOne(param otps.FindOTPParam) (otps.OTP, error) {
+func (r *OTPRepository) FindOne(param otps.FindOTPParam) (*otps.OTP, error) {
 	sql := "SELECT * FROM otps WHERE recipient = $1 AND channel = $2 AND purpose = $3 LIMIT 1;"
 	rows, err := r.db.Query(context.Background(), sql, param.Recipient, param.Channel, param.Purpose)
 	if err != nil {
-		return otps.OTP{}, err
+		return nil, err
 	}
 
 	otp, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[otps.OTP])
 	if err != nil {
-		return otps.OTP{}, err
+		return nil, err
 	}
 
-	return otp, nil
+	return &otp, nil
 }
 
 func (r *OTPRepository) Delete(ctx context.Context, otp otps.OTP) error {

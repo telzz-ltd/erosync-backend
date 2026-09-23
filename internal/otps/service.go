@@ -39,7 +39,7 @@ func (s *Service) Validate(ctx context.Context, param ValidateOTPParam) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(otp.CodeHash), []byte(param.Code)); err != nil {
 		if otp.Valid() {
 			otp.IncreaseAttempt()
-			if err := s.repo.Save(ctx, otp); err != nil {
+			if err := s.repo.Save(ctx, *otp); err != nil {
 				log.Printf("unable to save otp: %v", err)
 			}
 		}
@@ -47,13 +47,13 @@ func (s *Service) Validate(ctx context.Context, param ValidateOTPParam) error {
 	}
 
 	if !otp.Valid() {
-		if err := s.repo.Delete(ctx, otp); err != nil {
+		if err := s.repo.Delete(ctx, *otp); err != nil {
 			log.Panicln("unable to delete otp: ", err)
 		}
 		return errors.New("invalid otp")
 	}
 
-	return s.repo.Delete(ctx, otp)
+	return s.repo.Delete(ctx, *otp)
 }
 
 type CreateOTPParam struct {

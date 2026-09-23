@@ -48,20 +48,28 @@ func (r *UserRepository) Save(ctx context.Context, user users.User) error {
 	return err
 }
 
-func (r *UserRepository) FindByID(id string) (users.User, error) {
+func (r *UserRepository) FindByID(id string) (*users.User, error) {
 	rows, err := r.db.Query(context.Background(), "SELECT * FROM users WHERE id = $1;", id)
 	if err != nil {
-		return users.User{}, err
+		return nil, err
 	}
 
-	return pgx.CollectOneRow(rows, pgx.RowToStructByName[users.User])
+	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[users.User])
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
-func (r *UserRepository) FindByEmail(email string) (users.User, error) {
+func (r *UserRepository) FindByEmail(email string) (*users.User, error) {
 	rows, err := r.db.Query(context.Background(), "SELECT * FROM users WHERE email = $1;", email)
 	if err != nil {
-		return users.User{}, err
+		return nil, err
 	}
 
-	return pgx.CollectOneRow(rows, pgx.RowToStructByName[users.User])
+	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[users.User])
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

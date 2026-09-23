@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"erosync/internal/infrastructure/persistence/postgres"
 	"erosync/internal/lib/app"
 	"erosync/internal/otps"
+	"erosync/internal/platform/persistence/postgres"
 	"erosync/internal/users"
 	"log"
 	"net/http"
@@ -18,6 +18,10 @@ import (
 
 	_ "github.com/lib/pq"
 )
+
+func init() {
+	app.RegisterValidator()
+}
 
 func main() {
 	ctx := context.Background()

@@ -3,19 +3,21 @@ package app
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
-func ShouldBindJSON(r *http.Request, t any) error {
+func ShouldBindJSON[T any](r *http.Request) (t T, err error) {
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
-		return err
+		return t, err
+	}
+	fmt.Println("Req: ", t)
+
+	if err := Validate.Struct(&t); err != nil {
+		return t, err
 	}
 
-	if err := Validate.Struct(t); err != nil {
-		return err
-	}
-
-	return nil
+	return t, nil
 }
 
 func GetValue(r *http.Request, key string) any {
