@@ -17,7 +17,7 @@ type OtpService struct {
 	repo port.OtpRepository
 }
 
-func NewService(r port.OtpRepository) *OtpService {
+func NewOtpService(r port.OtpRepository) *OtpService {
 	return &OtpService{r}
 }
 

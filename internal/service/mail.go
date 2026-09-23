@@ -21,7 +21,7 @@ type MailService struct {
 	from     string
 }
 
-func NewMailer(host string, port int, user, password, from string) *MailService {
+func NewMailService(host string, port int, user, password, from string) *MailService {
 	return &MailService{host, port, user, password, from}
 }
 

@@ -51,8 +51,8 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if errs := h.validator.ValidateStruct(req); errs != nil {
-		response.Error(w, 400, response.MsgInvalidBody, errs)
+	if err := h.validator.ValidateStruct(&req); err != nil {
+		response.Error(w, 400, response.MsgInvalidBody, err)
 		return
 	}
 

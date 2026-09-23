@@ -10,9 +10,12 @@ type Config struct {
 	MailPort     int
 	MailUsername string
 	MailPassword string
+	MailFrom     string
 
 	//Database
 	DatabaseUrl string
+
+	JwtSecret string
 }
 
 func New() *Config {
@@ -26,8 +29,11 @@ func New() *Config {
 		MailPort:     MustGetEnv[int]("MAIL_PORT"),
 		MailUsername: GetEnv("MAIL_USERNAME", ""),
 		MailPassword: GetEnv("MAIL_PASSWORD", ""),
+		MailFrom:     MustGetEnv[string]("MAIL_FROM"),
 
 		//Database
 		DatabaseUrl: MustGetEnv[string]("DATABASE_URL"),
+
+		JwtSecret: MustGetEnv[string]("JWT_SECRET"),
 	}
 }

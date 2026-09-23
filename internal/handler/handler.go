@@ -16,6 +16,19 @@ type Handler struct {
 	jwt   *service.JwtService
 }
 
-func New() *Handler {
-	return &Handler{}
+func New(
+	validator *validator.Validator,
+	users *service.UserService,
+	otps *service.OtpService,
+	mail *service.MailService,
+	jwt *service.JwtService,
+
+) *Handler {
+	return &Handler{
+		validator: validator,
+		users:     users,
+		otps:      otps,
+		mail:      mail,
+		jwt:       jwt,
+	}
 }

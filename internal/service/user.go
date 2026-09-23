@@ -19,7 +19,7 @@ type UserService struct {
 	repo port.UserRepository
 }
 
-func NewUseCase(repo port.UserRepository) *UserService {
+func NewUserService(repo port.UserRepository) *UserService {
 	return &UserService{repo}
 }
 

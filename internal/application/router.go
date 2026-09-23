@@ -12,5 +12,8 @@ func (app *Application) RegisterRouter() *http.ServeMux {
 		response.JSON(w, 200, response.Map{"message": "app working fine"})
 	})
 
+	mux.HandleFunc("POST /auth/register", app.handler.Register)
+	mux.HandleFunc("POST /auth/login", app.handler.Login)
+
 	return mux
 }
