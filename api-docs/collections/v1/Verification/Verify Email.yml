@@ -1,0 +1,20 @@
+info:
+  name: Verify Email
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{url}}/verification/email/verify"
+  body:
+    type: json
+    data: '{"code": "500301"}'
+  auth:
+    type: bearer
+    token: "{{refreshToken}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
