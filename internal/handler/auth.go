@@ -21,19 +21,19 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if errs := h.validator.ValidateStruct(req); errs != nil {
+	if errs := h.app.Validator.ValidateStruct(req); errs != nil {
 		response.Error(w, 400, response.MsgInvalidBody, errs)
 		return
 	}
 
-	user, err := h.users.Create(r.Context(), req)
+	user, err := h.app.Users.Create(r.Context(), req)
 	if err != nil {
 		response.JSON(w, 500, response.Map{"message": err.Error()})
 		return
 	}
 
-	accessToken, _ := h.jwt.GenerateToken(user.ID, string(user.Role), 30*time.Minute)
-	refreshToken, _ := h.jwt.GenerateToken(user.ID, string(user.Role), 24*time.Hour)
+	accessToken, _ := h.app.Jwt.GenerateToken(user.ID, string(user.Role), 30*time.Minute)
+	refreshToken, _ := h.app.Jwt.GenerateToken(user.ID, string(user.Role), 24*time.Hour)
 
 	resp := schema.AuthResponse{
 		User:         *user,
@@ -51,12 +51,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.validator.ValidateStruct(&req); err != nil {
+	if err := h.app.Validator.ValidateStruct(&req); err != nil {
 		response.Error(w, 400, response.MsgInvalidBody, err)
 		return
 	}
 
-	user, err := h.users.GetByEmail(req.Email)
+	user, err := h.app.Users.GetByEmail(req.Email)
 	if err != nil || user == nil {
 		response.JSON(w, 500, response.Map{"message": "invalid credentials"})
 		return
@@ -67,8 +67,8 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, _ := h.jwt.GenerateToken(user.ID, string(user.Role), 30*time.Minute)
-	refreshToken, _ := h.jwt.GenerateToken(user.ID, string(user.Role), 24*time.Hour)
+	accessToken, _ := h.app.Jwt.GenerateToken(user.ID, string(user.Role), 30*time.Minute)
+	refreshToken, _ := h.app.Jwt.GenerateToken(user.ID, string(user.Role), 24*time.Hour)
 
 	resp := schema.AuthResponse{
 		User:         *user,
@@ -82,14 +82,14 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) SendEmailVerificationCode(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(middleware.UserIDKey).(string)
 
-	user, err := h.users.GetByID(userID)
+	user, err := h.app.Users.GetByID(userID)
 	if err != nil {
 		log.Println(err)
 		response.Error(w, 400, response.MsgUnknown, nil)
 		return
 	}
 
-	otpCode, err := h.otps.Create(r.Context(), service.CreateOTPParam{
+	otpCode, err := h.app.Otps.Create(r.Context(), service.CreateOTPParam{
 		Purpose:   domain.OTPPurposeVerifyEmail,
 		Channel:   domain.OTPChannelEmail,
 		Recipient: user.Email,
@@ -100,7 +100,7 @@ func (h *Handler) SendEmailVerificationCode(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := h.mail.VerifyEmail(*user, otpCode); err != nil {
+	if err := h.app.Mail.VerifyEmail(*user, otpCode); err != nil {
 		response.Error(w, 500, err.Error(), nil)
 		return
 	}
@@ -119,20 +119,20 @@ func (h *Handler) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.validator.ValidateStruct(req); err != nil {
+	if err := h.app.Validator.ValidateStruct(req); err != nil {
 		response.Error(w, 400, response.MsgInvalidBody, err)
 		return
 	}
 
 	userID := r.Context().Value(middleware.UserIDKey).(string)
 
-	user, err := h.users.GetByID(userID)
+	user, err := h.app.Users.GetByID(userID)
 	if err != nil {
 		response.Error(w, 500, err.Error(), nil)
 		return
 	}
 
-	err = h.otps.Validate(r.Context(), service.ValidateOTPParam{
+	err = h.app.Otps.Validate(r.Context(), service.ValidateOTPParam{
 		Code:      req.OtpCode,
 		Channel:   domain.OTPChannelEmail,
 		Purpose:   domain.OTPPurposeVerifyEmail,
@@ -145,7 +145,7 @@ func (h *Handler) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !user.EmailVerified() {
-		err = h.users.VerifyEmail(r.Context(), *user)
+		err = h.app.Users.VerifyEmail(r.Context(), *user)
 		if err != nil {
 			response.Error(w, 500, err.Error(), nil)
 			return

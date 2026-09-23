@@ -3,6 +3,8 @@ package postgres
 import (
 	"context"
 	"erosync/internal/domain"
+	"fmt"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -25,12 +27,35 @@ func (r *BrandCategoryRepository) Save(ctx context.Context, category domain.Bran
 }
 
 func (r *BrandCategoryRepository) Find(param map[string]any) ([]domain.BrandCategory, error) {
-	name, ok := param["name"].(string)
-	if !ok {
-		name = ""
+	conditions := []string{}
+	args := []any{}
+
+	if name, ok := param["name"].(string); ok {
+		conditions = append(conditions, "name ILIKE")
+		args = append(args, "%"+name+"%")
 	}
 
-	rows, err := r.db.Query(context.Background(), "SELECT * FROM brand_categories WHERE name ILIKE '%$1%';", name)
+	if ids, ok := param["ids"].([]string); ok {
+		conditions = append(conditions, "id IN")
+		args = append(args, ids)
+	}
+
+	c2 := []string{}
+
+	for i := range conditions {
+		con := fmt.Sprintf("%s $%d", conditions[i], i+1)
+		c2 = append(c2, con)
+	}
+
+	sql := "SELECT * FROM brand_categories"
+
+	if len(c2) > 0 {
+		sql += fmt.Sprintf(" WHERE %s", strings.Join(c2, " AND "))
+	}
+
+	fmt.Println("Query: ", sql, args)
+
+	rows, err := r.db.Query(context.Background(), sql, args...)
 	if err != nil {
 		return nil, err
 	}

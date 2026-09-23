@@ -10,6 +10,7 @@ type Map map[string]any
 var (
 	MsgInvalidBody = "invalid request body"
 	MsgUnknown     = "an unknown error occurred"
+	MsgForbidden   = "insufficient permission"
 )
 
 func JSON(w http.ResponseWriter, status int, data any) {
@@ -26,4 +27,8 @@ func Error(w http.ResponseWriter, status int, message string, errors any) {
 		payload["details"] = errors
 	}
 	JSON(w, status, payload)
+}
+
+func OK(w http.ResponseWriter, data any) {
+	JSON(w, 200, map[string]any{"message": "success", "data": data})
 }
