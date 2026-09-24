@@ -27,38 +27,33 @@ func (r *BrandCategoryRepository) Save(ctx context.Context, category domain.Bran
 }
 
 func (r *BrandCategoryRepository) Find(param map[string]any) ([]domain.BrandCategory, error) {
-	conditions := []string{}
-	args := []any{}
+	var (
+		where = []string{}
+		args  = []any{}
+	)
 
 	if name, ok := param["name"].(string); ok {
-		conditions = append(conditions, "name ILIKE")
 		args = append(args, "%"+name+"%")
+		where = append(where, fmt.Sprintf("name ILIKE $%d", len(args)))
 	}
 
 	if ids, ok := param["ids"].([]string); ok {
-		conditions = append(conditions, "id IN")
 		args = append(args, ids)
-	}
-
-	c2 := []string{}
-
-	for i := range conditions {
-		con := fmt.Sprintf("%s $%d", conditions[i], i+1)
-		c2 = append(c2, con)
+		where = append(where, fmt.Sprintf("id = ANY($%d)", len(args)))
 	}
 
 	sql := "SELECT * FROM brand_categories"
 
-	if len(c2) > 0 {
-		sql += fmt.Sprintf(" WHERE %s", strings.Join(c2, " AND "))
+	if len(where) > 0 {
+		sql += fmt.Sprintf(" WHERE %s", strings.Join(where, " AND "))
 	}
-
-	fmt.Println("Query: ", sql, args)
 
 	rows, err := r.db.Query(context.Background(), sql, args...)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
+
 	return pgx.CollectRows(rows, pgx.RowToStructByName[domain.BrandCategory])
 }
 
@@ -67,6 +62,8 @@ func (r *BrandCategoryRepository) FindByID(id string) (domain.BrandCategory, err
 	if err != nil {
 		return domain.BrandCategory{}, err
 	}
+	defer rows.Close()
+
 	return pgx.CollectOneRow(rows, pgx.RowToStructByName[domain.BrandCategory])
 }
 
@@ -74,4 +71,8 @@ func (r *BrandCategoryRepository) Delete(ctx context.Context, ids []string) erro
 	_, err := GetExecutor(ctx, r.db).
 		Exec(ctx, "DELETE FROM brand_categories WHERE id IN $1", ids)
 	return err
+}
+func (r *BrandCategoryRepository) BulkInsert(ctx context.Context, categories []domain.BrandCategory) error {
+	panic("method not implemented")
+	return nil
 }

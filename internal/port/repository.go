@@ -37,4 +37,5 @@ type BrandCategoryRepository interface {
 	Find(map[string]any) ([]domain.BrandCategory, error)
 	FindByID(id string) (domain.BrandCategory, error)
 	Delete(x context.Context, ids []string) error
+	BulkInsert(c context.Context, categories []domain.BrandCategory) error
 }

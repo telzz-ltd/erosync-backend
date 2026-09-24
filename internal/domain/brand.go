@@ -8,13 +8,13 @@ import (
 )
 
 type Brand struct {
-	ID          string           `json:"string"`
+	ID          string           `json:"id"`
 	Name        string           `json:"name"`
 	Description string           `json:"description"`
-	LogoUrl     string           `json:"logoUrl"`
+	LogoUrl     *string          `json:"logoUrl"`
 	ContactInfo *json.RawMessage `json:"contactInfo"`
 	CreatedAt   time.Time        `json:"createdAt"`
-	Categories  []BrandCategory  `json:"categories"`
+	Categories  []BrandCategory  `json:"categories,omitempty" db:"-"`
 }
 
 func NewBrand(id, name string) (Brand, error) {
@@ -34,7 +34,7 @@ func (b *Brand) SetDescription(description string) {
 }
 
 func (b *Brand) SetLogoUrl(url string) {
-	b.LogoUrl = url
+	b.LogoUrl = new(url)
 }
 
 func (b *Brand) SetContactInfo(contactInfo json.RawMessage) {

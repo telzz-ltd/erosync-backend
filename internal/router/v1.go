@@ -20,7 +20,8 @@ func RegisterV1Router(app *application.Application, h *handler.Handler) chi.Rout
 	r.HandleFunc("POST /auth/register", h.Register)
 	r.HandleFunc("POST /auth/login", h.Login)
 
-	r.HandleFunc("GET /brands/categories", h.GetBrandCategories)
+	r.HandleFunc("GET /brands", h.QueryBrands)
+	r.HandleFunc("GET /brands/categories", h.QueryBrandCategories)
 
 	//Authenticated routes
 	r.Group(func(r chi.Router) {
@@ -34,6 +35,7 @@ func RegisterV1Router(app *application.Application, h *handler.Handler) chi.Rout
 			r.Use(middleware.Admin)
 
 			r.HandleFunc("POST /brands", h.CreateBrand)
+			r.HandleFunc("POST /brands/categories", h.CreateBrandCategories)
 		})
 	})
 

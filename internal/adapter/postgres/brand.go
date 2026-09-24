@@ -30,7 +30,9 @@ func (r *BrandRepository) Save(ctx context.Context, brand domain.Brand) error {
 			logo_url=EXCLUDED.logo_url,
 			contact_info=EXCLUDED.contact_info
 		;
-	`)
+	`,
+		brand.ID, brand.Name, brand.Description, brand.LogoUrl, brand.ContactInfo, brand.CreatedAt,
+	)
 	if err != nil {
 		return err
 	}
@@ -92,7 +94,7 @@ func (r *BrandRepository) Delete(ctx context.Context, id string) error {
 func (r *BrandRepository) ExistByName(name string) bool {
 	var count int
 	err := r.db.
-		QueryRow(context.Background(), "SELECT count(*) FROM brands WHERE name = $1", name).
+		QueryRow(context.Background(), "SELECT count(*) FROM brands WHERE LOWER(name) = $1", strings.ToLower(name)).
 		Scan(&count)
 	if err != nil {
 		log.Println(err)

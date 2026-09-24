@@ -18,10 +18,20 @@ CREATE TABLE brand_category_pivot (
     brand_id TEXT NOT NULL REFERENCES brands(id),
     category_id TEXT NOT NULL REFERENCES brand_categories(id),
     
-    PRIMARY KEY (brand_id, category_id)
+    CONSTRAINT pk_brand_category_pivot PRIMARY KEY (brand_id, category_id),
+
+    CONSTRAINT fk_brand_category_pivot_brand_id 
+        FOREIGN KEY (brand_id) 
+        REFERENCES brands(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_brand_category_pivot_category_id 
+        FOREIGN KEY (category_id) 
+        REFERENCES brand_categories(id) 
+        ON DELETE CASCADE
 );
 
 -- +goose Down
-DROP TABLE brands;
-DROP TABLE brand_categories;
 DROP TABLE brand_category_pivot;
+DROP TABLE brand_categories;
+DROP TABLE brands;

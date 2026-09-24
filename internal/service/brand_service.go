@@ -50,6 +50,24 @@ func (s *BrandService) Create(ctx context.Context, req schema.CreateBrandRequest
 	return brand, nil
 }
 
-func (s *BrandService) GetCategories(params map[string]any) ([]domain.BrandCategory, error) {
+func (s *BrandService) Query(params map[string]any) ([]domain.Brand, error) {
+	return s.repo.Find(params)
+}
+
+func (s *BrandService) QueryCategories(params map[string]any) ([]domain.BrandCategory, error) {
 	return s.categoryRepo.Find(params)
+}
+
+func (s *BrandService) CreateCategories(ctx context.Context, req schema.BulkCreateBrandCategoriesRequest) error {
+	categories := []domain.BrandCategory{}
+
+	for _, cat := range req.Data {
+		categories = append(categories, domain.BrandCategory{
+			ID:          rand.Text(),
+			Name:        cat.Name,
+			Description: &cat.Description,
+		})
+	}
+
+	return s.categoryRepo.BulkInsert(ctx, categories)
 }

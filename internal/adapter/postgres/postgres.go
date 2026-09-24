@@ -28,7 +28,26 @@ func GetExecutor(ctx context.Context, fallback DBTX) DBTX {
 }
 
 func New(dbUrl string) *port.Store {
-	db, err := pgxpool.New(context.Background(), dbUrl)
+	ctx := context.Background()
+
+	config, err := pgxpool.ParseConfig(dbUrl)
+	if err != nil {
+		panic(err)
+	}
+
+	// config.ConnConfig.Tracer = &tracelog.TraceLog{
+	// 	Logger: tracelog.LoggerFunc(func(
+	// 		ctx context.Context,
+	// 		level tracelog.LogLevel,
+	// 		msg string,
+	// 		data map[string]any,
+	// 	) {
+	// 		log.Printf("[%s] %s %v", level, msg, data)
+	// 	}),
+	// 	LogLevel: tracelog.LogLevelTrace,
+	// }
+
+	db, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
 		log.Fatalln("uanble to connect to db", err)
 	}
