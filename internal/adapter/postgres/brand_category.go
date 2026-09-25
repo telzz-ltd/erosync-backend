@@ -73,6 +73,13 @@ func (r *BrandCategoryRepository) Delete(ctx context.Context, ids []string) erro
 	return err
 }
 func (r *BrandCategoryRepository) BulkInsert(ctx context.Context, categories []domain.BrandCategory) error {
-	panic("method not implemented")
-	return nil
+	_, err := r.db.CopyFrom(ctx,
+		pgx.Identifier{"brand_categories"},
+		[]string{"id", "name", "description"},
+		pgx.CopyFromSlice(len(categories), func(i int) ([]any, error) {
+			cat := categories[i]
+			return []any{cat.ID, cat.Name, cat.Description}, nil
+		}),
+	)
+	return err
 }
