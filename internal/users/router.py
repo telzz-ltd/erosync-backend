@@ -53,7 +53,7 @@ def reset_password(dto: ResetPassword):
 @router.post("/verification/email/send-otp", )
 def send_email_verification_code():
     send_mail(
-        template="welcome",
+        template="verification_code",
         to="baba@test.com",
         subject="Welcome to Erosync",
         template_args={
