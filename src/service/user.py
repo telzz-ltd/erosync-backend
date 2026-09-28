@@ -13,10 +13,16 @@ class UserService:
 
     def create(self, dto: RegisterRequest) -> User:
         password_hash = bcrypt.hashpw(
-            dto.password.encode(), bcrypt.gensalt()).decode()
+            dto.password.encode(),
+            bcrypt.gensalt()
+        ).decode()
 
         user = User.create(
-            id=str(uuid7()), name=dto.name, email=dto.email, password_hash=password_hash
+            id=str(uuid7()),
+            name=dto.name,
+            email=dto.email,
+            password_hash=password_hash
         )
+
         self.store.save(user)
         return user

@@ -1,25 +1,26 @@
-from fastapi import APIRouter, HTTPException, Response
+from typing import Annotated
+from fastapi import APIRouter, HTTPException, Response, Depends
 from psycopg.errors import UniqueViolation
 
 import bcrypt
 
 from src.lib import jwt
 from src.lib.db import pool
-from src.pg_store.user_store import PGUserStore
+
 
 from src.schema.user import ForgotPassword, LoginRequest, RegisterRequest, ResetPassword, UserResponse, VerifyEmailRequest
-from src.service import UserService
+from src.lib.deps import UserDeps
 from src.lib.email import load_template, send_mail
 
 router = APIRouter()
 
 
 @router.post("/auth/register")
-def register(dto: RegisterRequest):
+def register(dto: RegisterRequest, users: UserDeps):
     try:
-        user = service.create(dto)
+        user = users.create(dto)
         access_token = jwt.encode({"sub": user.id, "role": user.role})
-        return {"accessToken": access_token, "user": UserResponse(user)}
+        return {"accessToken": access_token, "user": UserResponse.model_validate(user)}
     except UniqueViolation as e:
         raise HTTPException(400, {"message": e.args[0]})
 

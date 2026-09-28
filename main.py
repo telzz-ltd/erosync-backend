@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 
-from internal.lib.db import pool
-from internal.users import user_router
+from src.lib.db import pool
+from src.router import user_router
 
 
 @asynccontextmanager
