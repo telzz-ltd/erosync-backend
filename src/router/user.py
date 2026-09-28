@@ -5,20 +5,19 @@ from psycopg.errors import UniqueViolation
 import bcrypt
 
 from src.lib import jwt
-from src.lib.db import pool
-
-
 from src.schema.user import ForgotPassword, LoginRequest, RegisterRequest, ResetPassword, UserResponse, VerifyEmailRequest
-from src.lib.deps import UserDeps
 from src.lib.email import load_template, send_mail
+from src.lib.deps import get_user_repo
+
+from src.service.user import create_user
 
 router = APIRouter()
 
 
 @router.post("/auth/register")
-def register(dto: RegisterRequest, users: UserDeps):
+def register(dto: RegisterRequest, user_repo=Depends(get_user_repo)):
     try:
-        user = users.create(dto)
+        user = create_user(dto, user_repo)
         access_token = jwt.encode({"sub": user.id, "role": user.role})
         return {"accessToken": access_token, "user": UserResponse.model_validate(user)}
     except UniqueViolation as e:

@@ -1,7 +1,20 @@
 from fastapi import Depends
-from typing import Annotated
+from psycopg_pool import ConnectionPool
+import os
 
-from src.service import UserService
 from src.adapter.postgres import UserRepository, BrandRepository, OtpRepository
 
-UserDeps = Annotated[UserService, Depends(UserRepository)]
+pool = ConnectionPool(os.getenv("DATABASE_URL", ""), open=False)
+
+
+def get_db():
+    with pool.connection() as conn:
+        yield conn
+
+
+def get_user_repo(pool: ConnectionPool = Depends(get_db)):
+    return UserRepository(pool)
+
+
+def get_otp_repo(pool: ConnectionPool = Depends(get_db)):
+    return OtpRepository(pool)

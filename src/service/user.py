@@ -5,6 +5,22 @@ import bcrypt
 from domain import User
 from src.port.repository import UserRepository
 from src.schema.user import RegisterRequest
+from src.port.repository import UserRepository
+
+
+def create_user(dto: RegisterRequest, repo: UserRepository) -> User:
+    password_hash = bcrypt.hashpw(
+        dto.password.encode(), bcrypt.gensalt()).decode()
+
+    user = User.create(
+        id=str(uuid7()),
+        name=dto.name,
+        email=dto.email,
+        password_hash=password_hash
+    )
+
+    repo.save(user)
+    return user
 
 
 class UserService:
