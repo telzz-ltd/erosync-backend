@@ -37,7 +37,7 @@ func New(cfg *config.Config, store *port.Store) *Application {
 			From:     cfg.MailFrom,
 		}),
 		Jwt:    service.NewJwtService(cfg.JwtSecret),
-		Brands: service.NewBrandService(store.Brand, store.BrandCategory),
+		Brands: service.NewBrandService(store.Brand, store.BrandCategory, store.Tx),
 	}
 
 	return app

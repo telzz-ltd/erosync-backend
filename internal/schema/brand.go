@@ -19,5 +19,5 @@ type CreateBrandCategoryRequest struct {
 }
 
 type BulkCreateBrandCategoriesRequest struct {
-	Data []CreateBrandCategoryRequest `json:"data" validate:"required,min=1,unique"`
+	Data []CreateBrandCategoryRequest `json:"data" validate:"required,min=1,unique,dive"`
 }

@@ -1,4 +1,0 @@
-@url=http://localhost:8080
-
-## Check Health
-GET {{url}}/health HTTP/1.1

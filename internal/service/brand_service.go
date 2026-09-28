@@ -7,6 +7,7 @@ import (
 	"erosync/internal/port"
 	"erosync/internal/schema"
 	"errors"
+	"log"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -14,13 +15,15 @@ import (
 type BrandService struct {
 	repo         port.BrandRepository
 	categoryRepo port.BrandCategoryRepository
+	tx           port.TxManager
 }
 
 func NewBrandService(
 	repo port.BrandRepository,
 	catRepo port.BrandCategoryRepository,
+	tx port.TxManager,
 ) *BrandService {
-	return &BrandService{repo, catRepo}
+	return &BrandService{repo, catRepo, tx}
 }
 
 func (s *BrandService) Create(ctx context.Context, req schema.CreateBrandRequest) (domain.Brand, error) {
@@ -41,9 +44,15 @@ func (s *BrandService) Create(ctx context.Context, req schema.CreateBrandRequest
 		return brand, err
 	}
 
+	if len(categories) != len(req.CategoryIds) {
+		return brand, errors.New("invalid category ids")
+	}
+
 	brand.Categories = categories
 
-	if err = s.repo.Save(ctx, brand); err != nil {
+	err = s.repo.Save(ctx, brand)
+	if err != nil {
+		log.Println(err)
 		return brand, err
 	}
 

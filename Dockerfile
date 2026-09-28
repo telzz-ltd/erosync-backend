@@ -8,9 +8,6 @@ RUN go mod download
 
 COPY . .
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
-RUN templ generate
-
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/app 
 
 FROM debian:bookworm-slim

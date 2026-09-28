@@ -11,11 +11,12 @@ import (
 )
 
 type BrandCategoryRepository struct {
-	db *pgxpool.Pool
+	db    *pgxpool.Pool
+	table string
 }
 
 func NewBrandCategoryRepository(db *pgxpool.Pool) *BrandCategoryRepository {
-	return &BrandCategoryRepository{db}
+	return &BrandCategoryRepository{db, "brand_categories"}
 }
 
 func (r *BrandCategoryRepository) Save(ctx context.Context, category domain.BrandCategory) error {
@@ -42,7 +43,7 @@ func (r *BrandCategoryRepository) Find(param map[string]any) ([]domain.BrandCate
 		where = append(where, fmt.Sprintf("id = ANY($%d)", len(args)))
 	}
 
-	sql := "SELECT * FROM brand_categories"
+	sql := fmt.Sprintf("SELECT * FROM %s", r.table)
 
 	if len(where) > 0 {
 		sql += fmt.Sprintf(" WHERE %s", strings.Join(where, " AND "))
@@ -58,7 +59,7 @@ func (r *BrandCategoryRepository) Find(param map[string]any) ([]domain.BrandCate
 }
 
 func (r *BrandCategoryRepository) FindByID(id string) (domain.BrandCategory, error) {
-	rows, err := r.db.Query(context.Background(), "SELECT * FROM brand_categories WHERE id = $1;", id)
+	rows, err := r.db.Query(context.Background(), fmt.Sprintf("SELECT * FROM %s WHERE id = $1;"), id)
 	if err != nil {
 		return domain.BrandCategory{}, err
 	}
@@ -69,17 +70,17 @@ func (r *BrandCategoryRepository) FindByID(id string) (domain.BrandCategory, err
 
 func (r *BrandCategoryRepository) Delete(ctx context.Context, ids []string) error {
 	_, err := GetExecutor(ctx, r.db).
-		Exec(ctx, "DELETE FROM brand_categories WHERE id IN $1", ids)
+		Exec(ctx, fmt.Sprintf("DELETE FROM %s WHERE id IN $1", r.table), ids)
 	return err
 }
 func (r *BrandCategoryRepository) BulkInsert(ctx context.Context, categories []domain.BrandCategory) error {
-	_, err := r.db.CopyFrom(ctx,
-		pgx.Identifier{"brand_categories"},
-		[]string{"id", "name", "description"},
-		pgx.CopyFromSlice(len(categories), func(i int) ([]any, error) {
-			cat := categories[i]
-			return []any{cat.ID, cat.Name, cat.Description}, nil
-		}),
-	)
-	return err
+	db := GetExecutor(ctx, r.db)
+	b := &pgx.Batch{}
+
+	for _, cat := range categories {
+		sql := fmt.Sprintf(`INSERT INTO %s (id, name, description) VALUES($1, $2, $3);`, r.table)
+		b.Queue(sql, cat.ID, cat.Name, cat.Description)
+	}
+
+	return db.SendBatch(ctx, b).Close()
 }

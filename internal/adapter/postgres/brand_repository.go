@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"erosync/internal/domain"
-	"fmt"
 	"log"
 	"strings"
 
@@ -21,7 +20,10 @@ func NewBrandRepository(db *pgxpool.Pool) *BrandRepository {
 
 func (r *BrandRepository) Save(ctx context.Context, brand domain.Brand) error {
 	db := GetExecutor(ctx, r.db)
-	_, err := db.Exec(ctx, `
+
+	batch := &pgx.Batch{}
+
+	batch.Queue(`
 		INSERT INTO brands (id, name, description, logo_url, contact_info, created_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		ON CONFLICT (id) DO UPDATE SET
@@ -33,29 +35,17 @@ func (r *BrandRepository) Save(ctx context.Context, brand domain.Brand) error {
 	`,
 		brand.ID, brand.Name, brand.Description, brand.LogoUrl, brand.ContactInfo, brand.CreatedAt,
 	)
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec(ctx, "DELETE FROM brand_category_pivot WHERE brand_id = $1", brand.ID)
-	if err != nil {
-		return err
-	}
-
-	var values = []string{}
-	for i := range brand.Categories {
-		n := i*2 + 1
-		values = append(values, fmt.Sprintf("($%d, $%d)", n, n+1))
-	}
-
-	sql := fmt.Sprintf("INSERT INTO brand_category_pivot (brand_id, category_id) VALUES %s", strings.Join(values, ","))
-	params := []any{}
 
 	for _, cat := range brand.Categories {
-		params = append(params, brand.ID, cat.ID)
+		batch.Queue(`
+			INSERT INTO brand_category_pivot (brand_id, category_id) VALUES($1, $2)
+			ON CONFLICT (brand_id, category_id) DO NOTHING;
+			`,
+			brand.ID, cat.ID,
+		)
 	}
-	_, err = db.Exec(ctx, sql, params...)
-	return err
+
+	return db.SendBatch(ctx, batch).Close()
 }
 
 func (r *BrandRepository) FindByID(id string) (*domain.Brand, error) {
