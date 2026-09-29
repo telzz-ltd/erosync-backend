@@ -8,3 +8,4 @@ deploy.sh
 **/__pycache__
 create-server.sh
 test.go
+node_modules

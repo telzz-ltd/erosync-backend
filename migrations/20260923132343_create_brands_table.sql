@@ -1,4 +1,4 @@
--- +goose Up
+-- Up Migration
 CREATE TABLE brands(
     id TEXT NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
@@ -31,7 +31,7 @@ CREATE TABLE brand_category_pivot (
         ON DELETE CASCADE
 );
 
--- +goose Down
+-- Down Migration
 DROP TABLE brand_category_pivot;
 DROP TABLE brand_categories;
 DROP TABLE brands;

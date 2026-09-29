@@ -1,4 +1,4 @@
--- +goose Up
+-- Up Migration
 CREATE table users(
     id varchar(255) NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -11,5 +11,5 @@ CREATE table users(
     email_verified_at TIMESTAMPTZ
 );
 
--- +goose Down
+-- Down Migration
 DROP TABLE users;

@@ -1,0 +1,7 @@
+{
+	"schema": "public",
+	"database-url-var": "DATABASE_URL",
+	"migrations-dir": "migrations",
+	"migration-filename-format": "utc",
+	"migration-file-language": "sql"
+}
