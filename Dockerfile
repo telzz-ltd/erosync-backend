@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 go build -o /app/app /app/cmd/api
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/app /app/cmd/api
 
 FROM debian:bookworm-slim
 
