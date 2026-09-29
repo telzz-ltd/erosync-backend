@@ -22,6 +22,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	jwtService := service.NewJwtService(os.Getenv("JWT_SECRET"))
+	userRepo := post
 
 	registerHandler := handler.NewRegisterHandler()
 	loginHandler := handler.NewLoginHandler()
