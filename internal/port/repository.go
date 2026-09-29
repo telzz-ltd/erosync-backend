@@ -39,3 +39,11 @@ type BrandCategoryRepository interface {
 	Delete(x context.Context, ids []string) error
 	BulkInsert(c context.Context, categories []domain.BrandCategory) error
 }
+
+type ProductCategoryRepository interface {
+	Save(context.Context, domain.ProductCategory) error
+	Find(map[string]any) ([]domain.ProductCategory, error)
+	FindByID(id string) (domain.ProductCategory, error)
+	Delete(x context.Context, ids []string) error
+	BulkInsert(c context.Context, categories []domain.ProductCategory) error
+}
