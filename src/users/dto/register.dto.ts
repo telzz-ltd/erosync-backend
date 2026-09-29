@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
 
 export class RegisterRequest {
   @IsNotEmpty()
-  @Matches('^[a-zA-Z]{2,}(?:(\s[a-zA-Z]{2,})){1,2}')
+  @Matches('^[a-zA-Z]{2,}(?:( [a-zA-Z]{2,})){1,2}')
   name!: string;
 
   @IsNotEmpty()
