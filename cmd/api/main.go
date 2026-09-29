@@ -8,6 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/telzz/erosync-api/internal/handler"
+	"github.com/telzz/erosync-api/internal/service"
 )
 
 func main() {
@@ -19,6 +20,8 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
+
+	jwtService := service.NewJwtService(os.Getenv("JWT_SECRET"))
 
 	registerHandler := handler.NewRegisterHandler()
 	loginHandler := handler.NewLoginHandler()
