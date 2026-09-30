@@ -48,11 +48,14 @@ func main() {
 	//handlers
 	registerHandler := handler.NewRegisterHandler(txManager, userRepo, jwtService, mailService)
 	loginHandler := handler.NewLoginHandler(userRepo, jwtService)
+	sendEmailHandler := handler.NewSendEmailCodeHandler(txManager, userRepo, nil)
 
 	mux.Handle("POST /auth/register", registerHandler)
 	mux.Handle("POST /auth/login", loginHandler)
 
-	h := middleware.Recoverer(mux)
+	mux.Handle("POST /verification/email/send-otp", middleware.Auth(sendEmailHandler, jwtService))
+
+	h := middleware.Chain(mux, middleware.Recoverer)
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.Port),

@@ -15,3 +15,9 @@ type UserRepository interface {
 	FindByID(id string) (*domain.User, error)
 	FindByEmail(email string) (*domain.User, error)
 }
+
+type OtpRepository interface {
+	Save(ctx context.Context, otp domain.OTP) error
+	FindOne(recipient, channel, purpose string) (*domain.OTP, error)
+	Delete(otp domain.OTP) error
+}

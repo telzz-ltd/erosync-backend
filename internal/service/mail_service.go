@@ -114,5 +114,8 @@ func (s *MailService) sendMail(ctx context.Context, param sendMailParam) error {
 		c.SetTLSPolicy(mail.NoTLS)
 	}
 
-	return c.DialAndSendWithContext(ctx, msg)
+	// ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+	// defer cancel()
+
+	return c.DialAndSend(msg)
 }
