@@ -16,14 +16,14 @@ var (
 )
 
 type User struct {
-	ID              string
-	Name            string
-	Email           string
-	PasswordHash    string
-	Status          UserStatus
-	Role            UserRole
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	DeletedAt       *time.Time
-	EmailVerifiedAt *time.Time
+	ID              string     `json:"id"`
+	Name            string     `json:"name"`
+	Email           string     `json:"email"`
+	PasswordHash    string     `json:"-"`
+	Status          UserStatus `json:"status"`
+	Role            UserRole   `json:"role"`
+	CreatedAt       time.Time  `json:"createdAt"`
+	UpdatedAt       time.Time  `json:"updatedAt"`
+	DeletedAt       *time.Time `json:"deletedAt"`
+	EmailVerifiedAt *time.Time `json:"emailVerifiedAt"`
 }

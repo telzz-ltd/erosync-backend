@@ -7,6 +7,11 @@ import (
 
 type Map map[string]any
 
+var (
+	MsgInvalidBody = "invalid request body"
+	MsgUnknown     = "an unknown error occurred"
+)
+
 func JSON(w http.ResponseWriter, statusCode int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 
