@@ -27,3 +27,16 @@ type User struct {
 	DeletedAt       *time.Time `json:"deletedAt"`
 	EmailVerifiedAt *time.Time `json:"emailVerifiedAt"`
 }
+
+func NewUser(id, name, email, passwordHash string) User {
+	return User{
+		ID:           id,
+		Name:         name,
+		Email:        email,
+		PasswordHash: passwordHash,
+		Status:       UserStatusActive,
+		Role:         UserRoleRegular,
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+	}
+}

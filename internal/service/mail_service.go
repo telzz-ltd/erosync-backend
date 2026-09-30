@@ -6,8 +6,10 @@ import (
 	"maps"
 	"os"
 	"path"
+	"strings"
 	"time"
 
+	"github.com/telzz/erosync-api/internal/domain"
 	"github.com/wneessen/go-mail"
 )
 
@@ -34,6 +36,30 @@ type sendMailParam struct {
 	Recipients   []string
 	Template     string
 	TemplateArgs map[string]any
+}
+
+func (s *MailService) SendWelcomeMail(ctx context.Context, user domain.User) error {
+	return s.sendMail(ctx, sendMailParam{
+		Subject:    "Welcome to " + s.cfg.AppName,
+		Recipients: []string{user.Email},
+		Template:   "welcome.html",
+		TemplateArgs: map[string]any{
+			"name": strings.Split(user.Name, " ")[0],
+		},
+	})
+}
+
+func (s *MailService) SendVerificationCode(ctx context.Context, user domain.User, code string, expMin int) error {
+	return s.sendMail(ctx, sendMailParam{
+		Subject:    "Verify your account",
+		Recipients: []string{user.Email},
+		Template:   "verify_email.html",
+		TemplateArgs: map[string]any{
+			"name":    strings.Split(user.Name, " ")[0],
+			"code":    code,
+			"minutes": expMin,
+		},
+	})
 }
 
 func (s *MailService) sendMail(ctx context.Context, param sendMailParam) error {

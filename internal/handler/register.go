@@ -1,16 +1,17 @@
 package handler
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"regexp"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/jackc/pgx"
 	"github.com/telzz/erosync-api/internal/domain"
 	"github.com/telzz/erosync-api/internal/port"
 	"github.com/telzz/erosync-api/internal/service"
@@ -19,17 +20,23 @@ import (
 )
 
 type RegisterHandler struct {
+	tx   port.TxManager
 	repo port.UserRepository
 	jwt  *service.JwtService
+	mail *service.MailService
 }
 
 func NewRegisterHandler(
+	tx port.TxManager,
 	repo port.UserRepository,
 	jwt *service.JwtService,
+	mail *service.MailService,
 ) *RegisterHandler {
 	return &RegisterHandler{
+		tx:   tx,
 		repo: repo,
 		jwt:  jwt,
+		mail: mail,
 	}
 }
 
@@ -40,8 +47,8 @@ type RegisterRequest struct {
 }
 
 func (r *RegisterRequest) Validate() error {
-	return validation.ValidateStruct(&r,
-		validation.Field(&r.Name, validation.Required, validation.Match(regexp.MustCompile("^[a-zA-Z]{2,}(?: [a-zA-Z]{2,}){2,3}$"))),
+	return validation.ValidateStruct(r,
+		validation.Field(&r.Name, validation.Required, validation.Match(regexp.MustCompile("^[a-zA-Z]{2,}(?: [a-zA-Z]{2,}){1,2}$"))),
 		validation.Field(&r.Email, validation.Required, is.Email),
 		validation.Field(&r.Password, validation.Required, validation.Length(8, 50)),
 	)
@@ -65,7 +72,7 @@ func (h *RegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	existingUser, err := h.repo.FindByEmail(req.Email)
-	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+	if err != nil {
 		response.Error(w, 500, err.Error(), nil)
 		return
 	}
@@ -81,20 +88,22 @@ func (h *RegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := domain.User{
-		ID:           rand.Text(),
-		Name:         req.Name,
-		Email:        req.Email,
-		PasswordHash: string(passwordHash),
-		Status:       domain.UserStatusActive,
-		Role:         domain.UserRoleRegular,
-	}
+	user := domain.NewUser(rand.Text(), req.Name, req.Email, string(passwordHash))
 
-	err = h.repo.Save(r.Context(), &user)
+	err = h.tx.Execute(r.Context(), func(ctx context.Context) error {
+		return h.repo.Save(r.Context(), user)
+	})
 	if err != nil {
+		log.Println("Error saving user", err)
 		response.Error(w, 500, err.Error(), nil)
 		return
 	}
+
+	go func() {
+		if err := h.mail.SendWelcomeMail(r.Context(), user); err != nil {
+			log.Println("Error sending mail: ", err)
+		}
+	}()
 
 	accessToken, _ := h.jwt.GenerateToken(r.Context(), user.ID, time.Hour)
 	refreshToken, _ := h.jwt.GenerateToken(r.Context(), user.ID, 24*time.Hour)
@@ -104,8 +113,4 @@ func (h *RegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		"accessToken":  accessToken,
 		"refreshToken": refreshToken,
 	})
-}
-
-func (h *RegisterHandler) Execute() (any, error) {
-	return nil, nil
 }

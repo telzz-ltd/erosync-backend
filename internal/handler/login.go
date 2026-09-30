@@ -8,7 +8,7 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/telzz/erosync-api/internal/port"
@@ -34,7 +34,7 @@ type LoginRequest struct {
 }
 
 func (r *LoginRequest) Validate() error {
-	return validation.ValidateStruct(&r,
+	return validation.ValidateStruct(r,
 		validation.Field(&r.Email, validation.Required, is.Email),
 		validation.Field(&r.Password, validation.Required),
 	)

@@ -1,4 +1,4 @@
--- Up Migration
+-- +goose Up
 CREATE table otps (
     recipient VARCHAR(255) NOT NULL, 
     code_hash TEXT NOT NULL, 
@@ -12,5 +12,5 @@ CREATE table otps (
     PRIMARY KEY (recipient, purpose, channel)
 );
 
--- Down Migration
+-- +goose Down
 DROP TABLE otps;

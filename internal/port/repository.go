@@ -11,7 +11,7 @@ type TxManager interface {
 }
 
 type UserRepository interface {
-	Save(ctx context.Context, user *domain.User) error
+	Save(ctx context.Context, user domain.User) error
 	FindByID(id string) (*domain.User, error)
 	FindByEmail(email string) (*domain.User, error)
 }
