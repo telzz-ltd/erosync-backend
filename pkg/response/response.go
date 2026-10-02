@@ -37,3 +37,15 @@ func Error(w http.ResponseWriter, statusCode int, message string, errData any) {
 		JSON(w, statusCode, Map{"message": message})
 	}
 }
+
+func Unauthenticated(w http.ResponseWriter) {
+	Error(w, 401, "Unauthenticated", nil)
+}
+
+func Denied(w http.ResponseWriter) {
+	Error(w, 403, "Insufficient Permission", nil)
+}
+
+func ServerError(w http.ResponseWriter, message string) {
+	Error(w, 500, message, nil)
+}

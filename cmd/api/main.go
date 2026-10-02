@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -32,6 +33,7 @@ func main() {
 	//repositories
 	txManager := postgres.NewTxManager(db)
 	userRepo := postgres.NewUserRepository(db)
+	otpRepo := postgres.NewOtpRepository(db)
 
 	//services
 	jwtService := service.NewJwtService(os.Getenv("JWT_SECRET"))
@@ -44,11 +46,12 @@ func main() {
 		AppName:  cfg.AppName,
 		AppUrl:   cfg.AppUrl,
 	})
+	otpService := service.NewOtpService(otpRepo)
 
 	//handlers
 	registerHandler := handler.NewRegisterHandler(txManager, userRepo, jwtService, mailService)
 	loginHandler := handler.NewLoginHandler(userRepo, jwtService)
-	sendEmailHandler := handler.NewSendEmailCodeHandler(txManager, userRepo, nil)
+	sendEmailHandler := handler.NewSendEmailCodeHandler(txManager, userRepo, otpService, mailService)
 
 	mux.Handle("POST /auth/register", registerHandler)
 	mux.Handle("POST /auth/login", loginHandler)
@@ -75,7 +78,7 @@ func main() {
 	}()
 
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 	<-c
 

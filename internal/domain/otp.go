@@ -19,6 +19,7 @@ var (
 type OTP struct {
 	ID          string
 	Recipient   string
+	CodeHash    string
 	Channel     OTPChannel
 	Purpose     OTPPurpose
 	ExpiresAt   time.Time
@@ -26,9 +27,10 @@ type OTP struct {
 	MaxAttempts int
 }
 
-func NewOTP(recipient string, channel OTPChannel, purpose OTPPurpose) OTP {
+func NewOTP(recipient, codeHash string, channel OTPChannel, purpose OTPPurpose) OTP {
 	return OTP{
 		ID:          rand.Text(),
+		CodeHash:    codeHash,
 		Recipient:   recipient,
 		Channel:     channel,
 		Purpose:     purpose,
