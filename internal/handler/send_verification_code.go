@@ -51,6 +51,11 @@ func (h *SendEmailCodeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		domain.OTPChannelMail,
 		domain.OTPPurposeVerifyEmail,
 	)
+	if err != nil {
+		log.Println("OTP Generate Error:", err)
+		response.ServerError(w, "an error occurred")
+		return
+	}
 
 	go func() {
 		err := h.mail.SendVerificationCode(r.Context(), *user, otpCode, 10)

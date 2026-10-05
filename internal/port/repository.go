@@ -19,5 +19,5 @@ type UserRepository interface {
 type OtpRepository interface {
 	Save(ctx context.Context, otp domain.OTP) error
 	FindOne(recipient string, channel domain.OTPChannel, purpose domain.OTPPurpose) (*domain.OTP, error)
-	Delete(id string) error
+	Delete(ctx context.Context, otp domain.OTP) error
 }
